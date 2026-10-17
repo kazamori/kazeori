@@ -1,4 +1,7 @@
-<!-- 締めのスライド。全面 accent1 に、お礼の文言とロゴを置く。 -->
+<!--
+  締めのスライド。全面 accent1 に、お礼の文言とロゴを置く。
+  お礼の文言は、枠に収まる最大の大きさで描く。改行（<br>）を書かなければ 1 行に、書けばその行数に収める。
+-->
 <script module lang="ts">
 	import type { LayoutChrome } from '../types';
 
@@ -8,10 +11,15 @@
 <script lang="ts">
 	import Html from '../components/Html.svelte';
 	import Logo from '../components/Logo.svelte';
+	import SlideTitle from '../components/SlideTitle.svelte';
 	import Square from '../components/Square.svelte';
 	import type { LayoutProps } from '../types';
 
 	let { slide, brand }: LayoutProps = $props();
+
+	let thanks = $derived(slide.title ?? 'ありがとうございました');
+	// 枠（高さ 440px）に行数分が収まる大きさを上限にする。行の幅に合わせた縮小は SlideTitle が行う
+	let size = $derived(Math.min(160, Math.floor(400 / (thanks.split('\n').length * 1.15))));
 </script>
 
 <div class="end">
@@ -24,7 +32,7 @@
 	<Square x={63.2} y={62.8} size={36.7} color="var(--kz-accent3)" />
 
 	<div class="message kz-fit">
-		<p class="thanks">{slide.title ?? 'ありがとうございました'}</p>
+		<SlideTitle title={thanks} {size} inline light />
 		{#if slide.titleAccent}<p class="accent">{slide.titleAccent}</p>{/if}
 		<Html html={slide.bodyHtml} class="end-body" />
 	</div>
@@ -53,14 +61,6 @@
 		flex-direction: column;
 		justify-content: center;
 		overflow: hidden;
-	}
-
-	.thanks {
-		margin: 0;
-		font-family: var(--kz-font-heading);
-		font-weight: 700;
-		font-size: 96px;
-		line-height: 1.2;
 	}
 
 	.accent {
