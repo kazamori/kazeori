@@ -217,7 +217,8 @@ titleAccent: Slides
 | `hide`、`disabled` | `true` ならスライドを出力しません                  |
 | `src`              | 別ファイルのスライドを読み込みます（共通スライド） |
 | `image`            | 画像（`image-left` などで使います）                |
-| `current`          | `agenda` で強調する項目の番号（kazeori 独自）      |
+| `current` | `agenda` で強調する項目の番号（kazeori 独自） |
+| `columns` | `feature-grid` の列数（1〜4、kazeori 独自） |
 
 フロントマターに `title` がないときは、本文の最初の `#` 見出しをタイトルとして使います。
 タイトル（`title`、`titleAccent`、本文の最初の `#` 見出し）とサブタイトルは、`<br>` の位置で改行します。
@@ -265,7 +266,7 @@ title: 人に見せる図、<br>自分が分かるための図
 | `diagram`                   | 図を本文領域いっぱいに置きます                                                                                     |
 | `two-cols`                  | 2 段組み（`::right::` で区切ります。Slidev の `two-cols-header` もこれで描きます）                                 |
 | `features`                  | 左に導入文、右に番号付きの帯で項目を並べます                                                                       |
-| `feature-grid`              | 項目をカードの格子で並べます                                                                                       |
+| `feature-grid` | 項目をカードの格子で並べます。列数は項目数から決め（3 個は 3 列、4 個は 2 列 2 行など）、`columns`（1〜4）で指定もできます |
 | `image-left`、`image-right` | 片側に画像、反対側に本文を置きます                                                                                 |
 | `image`                     | 画像を全面に置きます                                                                                               |
 | `three-images`              | 画像 3 枚とそれぞれの説明を並べます                                                                                |

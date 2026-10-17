@@ -51,8 +51,12 @@ const slideKeys = new Set([
 	'titleAccent',
 	'image',
 	'images',
-	'current'
+	'current',
+	'columns'
 ]);
+
+/** 正の整数で指定する項目（agenda の current、feature-grid の columns）。 */
+const positiveIntegerKeys = new Set(['current', 'columns']);
 
 const headmatterKeys = new Set(['themeConfig', 'author', 'event', 'date', 'brand']);
 
@@ -111,7 +115,10 @@ const slidevKeys = new Set([
 
 /** フロントマターの項目を検査する。Slidev の項目は情報として、どちらにもない項目は警告として報告する。 */
 export function checkKeys(raw: RawSlide, isHeadmatter: boolean, ctx: DeckContext) {
-	for (const key of Object.keys(raw.frontmatter)) {
+	for (const [key, value] of Object.entries(raw.frontmatter)) {
+		if (positiveIntegerKeys.has(key) && !(Number.isInteger(value) && (value as number) >= 1)) {
+			report(ctx, 'warning', raw.file, raw.line, `${key} は 1 以上の整数で指定してください`);
+		}
 		if (slideKeys.has(key) || (isHeadmatter && headmatterKeys.has(key))) continue;
 		if (slidevKeys.has(key)) {
 			report(ctx, 'info', raw.file, raw.line, `Slidev の項目「${key}」は kazeori では使いません`);
