@@ -14,11 +14,6 @@ export function parseMarkdown(text: string): Root {
 	return processor.parse(text) as Root;
 }
 
-export function walkImages(node: Root | RootContent, visit: (img: Image) => void) {
-	if (node.type === 'image') visit(node);
-	if ('children' in node) for (const child of node.children) walkImages(child, visit);
-}
-
 function collectCodeLangs(node: Root | RootContent, langs: Set<string>) {
 	if (node.type === 'code' && node.lang) langs.add(node.lang);
 	if ('children' in node) for (const child of node.children) collectCodeLangs(child, langs);

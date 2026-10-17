@@ -46,7 +46,7 @@ export function findWorkspaceRoot(start: string): string | null {
 }
 
 /** 設定ファイルが見つからないときに使う、ツール同梱のサンプル workspace。 */
-export function exampleWorkspaceRoot(): string {
+function exampleWorkspaceRoot(): string {
 	return path.join(kazeoriRoot, 'examples');
 }
 
@@ -130,7 +130,7 @@ export function isColor(value: unknown): value is ColorName {
 }
 
 /** YAML ファイルを読む。読めないときは diagnostics にエラーを積んで null を返す。 */
-export function readYamlFile(file: string, diagnostics: Diagnostic[]): unknown {
+function readYamlFile(file: string, diagnostics: Diagnostic[]): unknown {
 	let text: string;
 	try {
 		text = fs.readFileSync(file, 'utf-8');

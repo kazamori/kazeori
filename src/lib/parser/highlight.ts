@@ -11,7 +11,7 @@ function getHighlighter(): Promise<Highlighter> {
 	return highlighterPromise;
 }
 
-export function isSupportedLanguage(lang: string): boolean {
+function isSupportedLanguage(lang: string): boolean {
 	return lang in bundledLanguages;
 }
 

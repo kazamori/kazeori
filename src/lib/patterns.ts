@@ -10,13 +10,13 @@
 export const PATTERN_PREFIX = 'pattern:';
 
 /** 波の模様の大きさ（マス）。 */
-export const WAVE_GRID = 8;
+const WAVE_GRID = 8;
 
 /**
  * 波の模様の名前と、列ごとの縁の位置（上から何マス目で塊が始まるか）。
  * 正弦波や直線で決めた縁の高さをマスの単位に丸めたもの。
  */
-export const wavePatterns = {
+const wavePatterns = {
 	/** 中ほどの高さで穏やかにうねる */
 	wave: [4, 3, 3, 4, 4, 5, 5, 4],
 	/** 中央が深く沈む谷 */
@@ -49,7 +49,7 @@ function cornerAt(x: number, y: number): Corner {
 }
 
 /** 次の段で塗る角の決め方。corner は親で塗った角、child は親の中での子のマスの位置。 */
-export const fractalRules = {
+const fractalRules = {
 	/** 常に同じ角を塗る */
 	fixed: (corner: Corner) => corner,
 	/** 段ごとに塗る角を時計回りに 90 度回す */

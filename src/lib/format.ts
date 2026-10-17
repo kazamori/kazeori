@@ -27,7 +27,7 @@ export function parseProgress(text: string): { label: string; value: number } | 
 }
 
 /** 項目の順に使う accent 色。テンプレートのアイコン付きの格子と同じ順。 */
-export const accentCycle = [
+const accentCycle = [
 	'var(--kz-accent1)',
 	'var(--kz-accent2)',
 	'var(--kz-accent3)',

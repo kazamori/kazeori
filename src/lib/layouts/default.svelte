@@ -7,10 +7,11 @@
 	import Html from '../components/Html.svelte';
 	import SlideHeader from '../components/SlideHeader.svelte';
 	import type { LayoutProps } from '../types';
+	import { slideVisuals } from '../visuals';
 
 	let { slide }: LayoutProps = $props();
 
-	let hasFigure = $derived(slide.figures.length + slide.images.length > 0);
+	let hasFigure = $derived(slideVisuals(slide).length > 0);
 	let hasBody = $derived(slide.bodyHtml.trim() !== '');
 </script>
 

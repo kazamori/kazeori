@@ -14,7 +14,7 @@
 	let current = $derived(
 		typeof slide.frontmatter.current === 'number' ? slide.frontmatter.current : null
 	);
-	// 帯を並べる領域の高さ（.bars の height と同じ値）
+	// 帯を並べる領域の高さ。CSS にはここから渡す
 	const AREA = 800;
 	// 帯 1 本の高さ（padding を含む）と帯の間隔。項目が多いときは、領域に収まるよう両方を縮める
 	let count = $derived(Math.max(1, slide.items.length));
@@ -24,7 +24,7 @@
 
 <SideColumn {slide} width={500} html={slide.introHtml} />
 
-<ol class="bars kz-fit" style:gap="{gap}px">
+<ol class="bars kz-fit" style:height="{AREA}px" style:gap="{gap}px">
 	{#each slide.items as item, i (i)}
 		<li
 			class={['bar', { current: current === i + 1, compact: rowHeight < 96 }]}
@@ -49,7 +49,6 @@
 		left: 669px;
 		top: 130px;
 		width: 1111px;
-		height: 800px;
 		margin: 0;
 		padding: 0;
 		list-style: none;

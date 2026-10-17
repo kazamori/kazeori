@@ -4,6 +4,11 @@
   文字が長くて行数が増えるときは、maxLines に収まるまで文字を小さくする（minSize まで）。
   タイトルの改行（\n。markdown の <br> や YAML の改行から作る）は、そのまま改行として描き、その行数に収める。
 -->
+<script module lang="ts">
+	/** タイトルの行の高さ（文字の大きさに対する比）。大きさを計算するレイアウトも使う */
+	export const TITLE_LINE_HEIGHT = 1.15;
+</script>
+
 <script lang="ts">
 	let {
 		title,
@@ -57,6 +62,7 @@
 		class={['title', { light, inline }]}
 		style:font-size="{size}px"
 		style:text-align={align}
+		style:line-height={TITLE_LINE_HEIGHT}
 		{@attach fit}
 	>
 		{#if title}<span class="main">{title}</span>{/if}
@@ -69,7 +75,6 @@
 		margin: 0;
 		font-family: var(--kz-font-heading);
 		font-weight: 700;
-		line-height: 1.15;
 		color: var(--kz-text);
 	}
 

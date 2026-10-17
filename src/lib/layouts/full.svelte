@@ -3,13 +3,14 @@
 	import Figure from '../components/Figure.svelte';
 	import Html from '../components/Html.svelte';
 	import type { LayoutProps } from '../types';
+	import { slideVisuals } from '../visuals';
 
 	let { slide }: LayoutProps = $props();
 </script>
 
 <div class="full kz-fit">
 	<Html html={slide.bodyHtml} />
-	{#if slide.figures.length + slide.images.length > 0}
+	{#if slideVisuals(slide).length > 0}
 		<div class="figure"><Figure {slide} /></div>
 	{/if}
 </div>

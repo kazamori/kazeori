@@ -10,10 +10,11 @@
 	import SlideHeader from '../components/SlideHeader.svelte';
 	import { accentAt } from '../format';
 	import type { LayoutProps } from '../types';
+	import { slideVisuals } from '../visuals';
 
 	let { slide }: LayoutProps = $props();
 
-	let visuals = $derived(slide.figures.length + slide.images.length);
+	let visuals = $derived(slideVisuals(slide).length);
 	let hasCaption = $derived(slide.restHtml.trim() !== '');
 	let columns = $derived(
 		[0, 1].map((i) => ({ item: slide.items[i] ?? null, hasVisual: i < visuals }))

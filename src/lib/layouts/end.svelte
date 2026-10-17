@@ -11,15 +11,22 @@
 <script lang="ts">
 	import Html from '../components/Html.svelte';
 	import Logo from '../components/Logo.svelte';
-	import SlideTitle from '../components/SlideTitle.svelte';
+	import SlideTitle, { TITLE_LINE_HEIGHT } from '../components/SlideTitle.svelte';
 	import Square from '../components/Square.svelte';
 	import type { LayoutProps } from '../types';
 
 	let { slide, brand }: LayoutProps = $props();
 
+	// 文言を置く枠の高さ、そのうち文言に使える高さ（titleAccent や本文の分を残す）、文言の大きさの上限
+	const MESSAGE_HEIGHT = 440;
+	const THANKS_HEIGHT = 400;
+	const MAX_SIZE = 160;
+
 	let thanks = $derived(slide.title ?? 'ありがとうございました');
-	// 枠（高さ 440px）に行数分が収まる大きさを上限にする。行の幅に合わせた縮小は SlideTitle が行う
-	let size = $derived(Math.min(160, Math.floor(400 / (thanks.split('\n').length * 1.15))));
+	// 行数分が収まる大きさを上限にする。行の幅に合わせた縮小は SlideTitle が行う
+	let size = $derived(
+		Math.min(MAX_SIZE, Math.floor(THANKS_HEIGHT / (thanks.split('\n').length * TITLE_LINE_HEIGHT)))
+	);
 </script>
 
 <div class="end">
@@ -31,7 +38,7 @@
 	<Square x={0} y={0} size={63.2} color="var(--kz-accent2)" />
 	<Square x={63.2} y={62.8} size={36.7} color="var(--kz-accent3)" />
 
-	<div class="message kz-fit">
+	<div class="message kz-fit" style:height="{MESSAGE_HEIGHT}px">
 		<SlideTitle title={thanks} {size} inline light />
 		{#if slide.titleAccent}<p class="accent">{slide.titleAccent}</p>{/if}
 		<Html html={slide.bodyHtml} class="end-body" />
@@ -56,7 +63,6 @@
 		left: 109.5px;
 		top: 300px;
 		width: 1100px;
-		height: 440px;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;

@@ -12,7 +12,7 @@
 
 	let { slide }: LayoutProps = $props();
 
-	// 格子を置く領域（.grid の幅と高さ）とカードの間隔
+	// 格子を置く領域の幅と高さ、カードの間隔。CSS にはここから渡す
 	const WIDTH = 1676.4;
 	const HEIGHT = 570;
 	const GAP = 28;
@@ -40,6 +40,9 @@
 
 <ul
 	class="grid kz-fit"
+	style:width="{WIDTH}px"
+	style:height="{HEIGHT}px"
+	style:gap="{GAP}px"
 	style:--columns={Math.min(columns, count)}
 	style:--column-width="{columnWidth}px"
 	style:--row-height="{rowHeight}px"
@@ -66,8 +69,6 @@
 		position: absolute;
 		left: 121.8px;
 		top: 380px;
-		width: 1676.4px;
-		height: 570px;
 		margin: 0;
 		padding: 0;
 		list-style: none;
@@ -77,7 +78,6 @@
 		/* 項目が列数より少ないときや行が少ないときは、格子を領域の中央に置く */
 		justify-content: center;
 		align-content: center;
-		gap: 28px;
 		overflow: hidden;
 	}
 

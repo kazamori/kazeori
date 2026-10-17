@@ -11,7 +11,7 @@ import { toString } from 'mdast-util-to-string';
 import type { ArchifyFigureData, Slide, SlideImage, SlideItem } from '../types.ts';
 import { asString, normalizeTitle, report, type DeckContext } from './context.ts';
 import { createImageResolver, type ImageResolver } from './images.ts';
-import { layoutsNeedingImage, layoutVisuals } from './keys.ts';
+import { checkLayoutVisuals } from './keys.ts';
 import {
 	createHtmlRenderer,
 	isImageOnlyParagraph,
@@ -212,39 +212,12 @@ export async function buildSlide(
 		slide.bodyHtml = scope.render(rewriteInlineImages(body, scope, lineOf));
 	}
 
-	if (layout === 'diagram' && figures.length === 0 && images.length === 0) {
-		report(
-			ctx,
-			'warning',
-			raw.file,
-			raw.line,
-			'diagram レイアウトには図（archify の HTML か画像）を置いてください'
-		);
-	}
-	const visuals = layoutVisuals[layout];
-	if (visuals && figures.length > 0 && !visuals.figures) {
-		report(ctx, 'warning', raw.file, raw.line, `${layout} レイアウトは archify の図を描きません`);
-	}
-	const drawable = images.length + (visuals?.figures ? figures.length : 0);
-	if (visuals && drawable > visuals.images) {
-		report(
-			ctx,
-			'warning',
-			raw.file,
-			raw.line,
-			visuals.images === 0
-				? `${layout} レイアウトは画像を描きません`
-				: `${layout} レイアウトが描く画像は ${visuals.images} 枚までです。残りの ${drawable - visuals.images} 枚は描きません`
-		);
-	}
-	if (layoutsNeedingImage.has(layout) && images.length === 0) {
-		report(
-			ctx,
-			'warning',
-			raw.file,
-			raw.line,
-			`${layout} レイアウトには画像（フロントマターの image か本文の画像）を置いてください`
-		);
-	}
+	checkLayoutVisuals(
+		layout,
+		{ images: images.length, figures: figures.length },
+		raw.file,
+		raw.line,
+		ctx
+	);
 	return slide;
 }

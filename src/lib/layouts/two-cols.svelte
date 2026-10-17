@@ -9,6 +9,7 @@
 	import SlideHeader from '../components/SlideHeader.svelte';
 	import { escapeHtml } from '../format';
 	import type { LayoutProps } from '../types';
+	import { slideVisuals } from '../visuals';
 
 	let { slide }: LayoutProps = $props();
 
@@ -18,16 +19,15 @@
 		slide.slots.left ??
 			(slide.subtitle ? `<h2>${escapeHtml(slide.subtitle)}</h2>` : '') + slide.bodyHtml
 	);
-	let visuals = $derived(
-		Array.from({ length: slide.figures.length + slide.images.length }, (_, i) => i)
-	);
+	// Figure に渡す、図と画像の並び（slideVisuals）の位置
+	let indexes = $derived(slideVisuals(slide).map((_, i) => i));
 </script>
 
 <SlideHeader {slide} subtitle={hasLeftSlot} />
 
 <div class="col left kz-fit">
 	<Html html={left} />
-	{#each visuals as index (index)}
+	{#each indexes as index (index)}
 		<div class="visual"><Figure {slide} {index} /></div>
 	{/each}
 </div>

@@ -1,21 +1,21 @@
 <!--
-  スライドの図。archify の図があればそれを、なければ画像を枠いっぱいに収めて描く。
+  スライドの図。slideVisuals の並び（archify の図が先、画像が後）の index 番目を、枠いっぱいに収めて描く。
   キャプション（markdown の画像のタイトル）があれば、枠の中で図の下に添える。
 -->
 <script lang="ts">
 	import type { Slide } from '../types';
+	import { slideVisuals } from '../visuals';
 	import ArchifyFigure from './ArchifyFigure.svelte';
 	import Captioned from './Captioned.svelte';
 	import Picture from './Picture.svelte';
 
 	let { slide, index = 0 }: { slide: Slide; index?: number } = $props();
 
-	let figure = $derived(slide.figures[index] ?? null);
-	let image = $derived(figure ? null : (slide.images[index - slide.figures.length] ?? null));
+	let visual = $derived(slideVisuals(slide)[index] ?? null);
 </script>
 
-{#if figure}
-	<Captioned caption={figure.caption}><ArchifyFigure {figure} /></Captioned>
-{:else if image}
-	<Picture {image} fit="contain" />
+{#if visual?.kind === 'figure'}
+	<Captioned caption={visual.figure.caption}><ArchifyFigure figure={visual.figure} /></Captioned>
+{:else if visual?.kind === 'image'}
+	<Picture image={visual.image} fit="contain" />
 {/if}
