@@ -14,14 +14,22 @@
 	let current = $derived(
 		typeof slide.frontmatter.current === 'number' ? slide.frontmatter.current : null
 	);
-	let rowHeight = $derived(slide.items.length > 6 ? 98 : 112);
+	// 帯を並べる領域の高さ（.bars の height と同じ値）
+	const AREA = 800;
+	// 帯 1 本の高さ（padding を含む）と帯の間隔。項目が多いときは、領域に収まるよう両方を縮める
+	let count = $derived(Math.max(1, slide.items.length));
+	let gap = $derived(count <= 6 ? 22 : count <= 9 ? 14 : 8);
+	let rowHeight = $derived(Math.min(144, Math.floor((AREA - gap * (count - 1)) / count)));
 </script>
 
 <SideColumn {slide} width={500} html={slide.introHtml} />
 
-<ol class="bars kz-fit">
+<ol class="bars kz-fit" style:gap="{gap}px">
 	{#each slide.items as item, i (i)}
-		<li class={['bar', { current: current === i + 1 }]} style:min-height="{rowHeight}px">
+		<li
+			class={['bar', { current: current === i + 1, compact: rowHeight < 96 }]}
+			style:min-height="{rowHeight}px"
+		>
 			<span class="number">{pad2(i + 1)}.</span>
 			<div class="text">
 				{#if item.title}<strong class="item-title">{item.title}</strong>{/if}
@@ -48,7 +56,6 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		gap: 22px;
 		overflow: hidden;
 	}
 
@@ -58,8 +65,14 @@
 		display: flex;
 		align-items: center;
 		gap: 24px;
+		/* min-height に padding を含め、帯の高さの計算と実際の高さをそろえる */
+		box-sizing: border-box;
 		padding: 16px 32px;
 		background: var(--kz-surface);
+	}
+
+	.bar.compact {
+		padding: 8px 32px;
 	}
 
 	.bar.current {
