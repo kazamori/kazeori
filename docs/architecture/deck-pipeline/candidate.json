@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "slides.md がスライドになるまで",
+    "output": "docs/architecture/deck-pipeline/deck-pipeline.html",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1080,
+      560
+    ],
+    "legend": {
+      "entries": {
+        "emphasis": {
+          "label": "主なデータの流れ"
+        },
+        "default": {
+          "label": "データの流れ"
+        },
+        "database": {
+          "label": "ファイル"
+        }
+      }
+    }
+  },
+  "stages": [
+    {
+      "label": "workspace のファイル"
+    },
+    {
+      "label": "分割と展開"
+    },
+    {
+      "label": "スライドの組み立て"
+    },
+    {
+      "label": "Vite"
+    },
+    {
+      "label": "描画"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "slidesMd",
+      "type": "database",
+      "label": "slides.md",
+      "sublabel": "デッキの本文",
+      "stage": 0,
+      "row": 0
+    },
+    {
+      "id": "partials",
+      "type": "database",
+      "label": "partials/",
+      "sublabel": "共通スライド",
+      "stage": 0,
+      "row": 1
+    },
+    {
+      "id": "assets",
+      "type": "database",
+      "label": "画像と図",
+      "sublabel": "画像、archify の HTML",
+      "stage": 0,
+      "row": 2
+    },
+    {
+      "id": "split",
+      "type": "backend",
+      "label": "split.ts",
+      "sublabel": "区切りとフロントマター",
+      "stage": 1,
+      "row": 0
+    },
+    {
+      "id": "sources",
+      "type": "backend",
+      "label": "sources.ts",
+      "sublabel": "src の展開",
+      "stage": 1,
+      "row": 1
+    },
+    {
+      "id": "slide",
+      "type": "backend",
+      "label": "slide.ts",
+      "sublabel": "スロットの割り当て",
+      "stage": 2,
+      "row": 1,
+      "tag": "shiki"
+    },
+    {
+      "id": "images",
+      "type": "backend",
+      "label": "images.ts",
+      "sublabel": "参照先の解決",
+      "stage": 2,
+      "row": 2
+    },
+    {
+      "id": "layouts",
+      "type": "frontend",
+      "label": "レイアウト",
+      "sublabel": "組み込みと独自",
+      "stage": 4,
+      "row": 0
+    },
+    {
+      "id": "plugin",
+      "type": "backend",
+      "label": "Vite プラグイン",
+      "sublabel": "仮想モジュール",
+      "stage": 3,
+      "row": 1
+    },
+    {
+      "id": "view",
+      "type": "frontend",
+      "label": "Slide.svelte",
+      "sublabel": "1920 x 1080 に描く",
+      "stage": 4,
+      "row": 1
+    }
+  ],
+  "flows": [
+    {
+      "id": "read-slides",
+      "from": "slidesMd",
+      "to": "split",
+      "label": "本文",
+      "variant": "emphasis"
+    },
+    {
+      "id": "split-to-sources",
+      "from": "split",
+      "to": "sources",
+      "label": "RawSlide[]",
+      "variant": "emphasis",
+      "labelDy": 25
+    },
+    {
+      "id": "read-partials",
+      "from": "partials",
+      "to": "sources",
+      "label": "src のファイル"
+    },
+    {
+      "id": "expanded-slides",
+      "from": "sources",
+      "to": "slide",
+      "label": "展開済み",
+      "variant": "emphasis"
+    },
+    {
+      "id": "read-assets",
+      "from": "assets",
+      "to": "images",
+      "label": "参照先"
+    },
+    {
+      "id": "resolved-images",
+      "from": "images",
+      "to": "slide",
+      "label": "画像と図"
+    },
+    {
+      "id": "deck-json",
+      "from": "slide",
+      "to": "plugin",
+      "label": "Deck",
+      "classification": "JSON",
+      "variant": "emphasis"
+    },
+    {
+      "id": "decks-module",
+      "from": "plugin",
+      "to": "view",
+      "label": "decks",
+      "variant": "emphasis",
+      "route": "straight"
+    },
+    {
+      "id": "layouts-module",
+      "from": "layouts",
+      "to": "view",
+      "label": "layouts",
+      "route": "straight",
+      "labelDy": 25
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "パーサ（src/lib/parser）",
+      "items": [
+        "split.ts が --- で区切り、フロントマターを読む",
+        "sources.ts が src の共通スライドを展開する",
+        "slide.ts が見出し、箇条書き、画像を各スロットに割り当てる"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "仮想モジュール",
+      "items": [
+        "virtual:kazeori/decks: 画像を Vite で配信用の URL に変えた全デッキ",
+        "virtual:kazeori/layouts: レイアウトと枠の装飾の有無"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "検査",
+      "items": [
+        "各段階が診断（エラー、警告、情報）を積む",
+        "kazeori check と build、pdf が同じ診断を使う"
+      ]
+    }
+  ]
+}

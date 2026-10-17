@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "kazeori のシステム構成",
+    "output": "docs/architecture/system-overview/system-overview.html",
+    "quality_profile": "showcase",
+    "legend": {
+      "entries": {
+        "frontend": {
+          "label": "画面"
+        },
+        "backend": {
+          "label": "処理"
+        },
+        "database": {
+          "label": "ファイル"
+        },
+        "external": {
+          "label": "外部"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "author",
+      "type": "external",
+      "label": "スライドの作成者",
+      "sublabel": "エディタで markdown を書く",
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "cli",
+      "type": "backend",
+      "label": "kazeori CLI",
+      "sublabel": "dev / build / pdf / check",
+      "pos": [
+        350,
+        60
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "vite",
+      "type": "backend",
+      "label": "Vite プラグイン",
+      "sublabel": "virtual:kazeori/*",
+      "pos": [
+        660,
+        60
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "app",
+      "type": "frontend",
+      "label": "SvelteKit アプリ",
+      "sublabel": "レイアウトと発表ビュー",
+      "pos": [
+        970,
+        60
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "browser",
+      "type": "external",
+      "label": "ブラウザ",
+      "sublabel": "発表、印刷ビュー",
+      "pos": [
+        1280,
+        60
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "workspace",
+      "type": "database",
+      "label": "workspace",
+      "sublabel": "kazeori.yaml / slides.md",
+      "pos": [
+        40,
+        270
+      ],
+      "size": [
+        170,
+        64
+      ],
+      "tag": "decks リポジトリ"
+    },
+    {
+      "id": "parser",
+      "type": "backend",
+      "label": "パーサ",
+      "sublabel": "markdown → Deck",
+      "pos": [
+        660,
+        270
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "site",
+      "type": "database",
+      "label": "静的サイト",
+      "sublabel": "dist/site",
+      "pos": [
+        970,
+        480
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "archify",
+      "type": "external",
+      "label": "archify スキル",
+      "sublabel": "構成図の HTML",
+      "pos": [
+        40,
+        480
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "chromium",
+      "type": "external",
+      "label": "Chromium",
+      "sublabel": "Playwright で操作",
+      "pos": [
+        660,
+        480
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "pdf",
+      "type": "database",
+      "label": "PDF",
+      "sublabel": "dist/<デッキ ID>.pdf",
+      "pos": [
+        660,
+        690
+      ],
+      "size": [
+        170,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "kazeori（このリポジトリ）",
+      "wraps": [
+        "cli",
+        "vite",
+        "app",
+        "parser"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "author-runs-cli",
+      "from": "author",
+      "to": "cli",
+      "label": "コマンド",
+      "variant": "emphasis"
+    },
+    {
+      "id": "cli-starts-vite",
+      "from": "cli",
+      "to": "vite",
+      "label": "起動",
+      "variant": "emphasis"
+    },
+    {
+      "id": "vite-serves-app",
+      "from": "vite",
+      "to": "app",
+      "label": "デッキ",
+      "variant": "emphasis"
+    },
+    {
+      "id": "app-renders-browser",
+      "from": "app",
+      "to": "browser",
+      "label": "描画",
+      "variant": "emphasis"
+    },
+    {
+      "id": "author-writes-workspace",
+      "from": "author",
+      "to": "workspace",
+      "label": "書く",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "archify-writes-workspace",
+      "from": "archify",
+      "to": "workspace",
+      "label": "図を置く",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "vite-calls-parser",
+      "from": "vite",
+      "to": "parser",
+      "label": "読み込み",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "parser-reads-workspace",
+      "from": "parser",
+      "to": "workspace",
+      "label": "slides.md、画像、レイアウト",
+      "fromSide": "left",
+      "toSide": "right"
+    },
+    {
+      "id": "app-prerenders-site",
+      "from": "app",
+      "to": "site",
+      "label": "prerender",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "chromium-opens-site",
+      "from": "chromium",
+      "to": "site",
+      "label": "印刷ビュー",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "chromium-writes-pdf",
+      "from": "chromium",
+      "to": "pdf",
+      "label": "書き出す",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "cli-drives-chromium",
+      "from": "cli",
+      "to": "chromium",
+      "label": "pdf",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "left"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "workspace",
+      "items": [
+        "kazeori.yaml を置いたディレクトリ（decks リポジトリなど）",
+        "ロゴ、雛形、共通スライド、独自レイアウトを持つ"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "kazeori",
+      "items": [
+        "CLI は Vite（SvelteKit）を JavaScript API で起動する",
+        "パーサの結果を仮想モジュールでアプリに渡す",
+        "dev では保存のたびにブラウザを再読み込みする"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "PDF の出力",
+      "items": [
+        "静的サイトを一時ディレクトリにビルドする",
+        "Bun.serve で配信し、Chromium で印刷ビューを PDF にする"
+      ]
+    }
+  ]
+}

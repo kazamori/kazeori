@@ -1,0 +1,66 @@
+{
+	"name": "kazeori",
+	"version": "0.0.1",
+	"description": "カザモリスタイルのスライドを markdown から生成するツール",
+	"type": "module",
+	"private": true,
+	"bin": {
+		"kazeori": "./cli/main.ts"
+	},
+	"exports": {
+		".": {
+			"types": "./src/lib/index.ts",
+			"svelte": "./src/lib/index.ts",
+			"default": "./src/lib/index.ts"
+		}
+	},
+	"imports": {
+		"#lib": "./src/lib/index.ts",
+		"#lib/*": "./src/lib/*"
+	},
+	"scripts": {
+		"dev": "bun ./cli/main.ts dev",
+		"build": "bun ./cli/main.ts build",
+		"pdf": "bun ./cli/main.ts pdf",
+		"kazeori": "bun ./cli/main.ts",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"test": "bun test",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write .",
+		"diagrams:png": "bun scripts/diagram-png.ts"
+	},
+	"dependencies": {
+		"@fontsource/metropolis": "^5.3.0",
+		"@fontsource/noto-sans-jp": "^5.3.1",
+		"@fontsource/roboto": "^5.3.0",
+		"@sveltejs/adapter-static": "^4.0.0",
+		"@sveltejs/kit": "^3.1.0",
+		"@sveltejs/vite-plugin-svelte": "^7.3.1",
+		"hast-util-to-html": "^9.0.5",
+		"linkedom": "^0.18.13",
+		"mdast-util-to-hast": "^13.2.1",
+		"mdast-util-to-string": "^4.0.0",
+		"playwright-core": "^1.64.1",
+		"remark-gfm": "^4.0.1",
+		"remark-parse": "^11.0.0",
+		"shiki": "^4.5.0",
+		"svelte": "^5.57.2",
+		"unified": "^11.0.5",
+		"vite": "^8.3.4",
+		"yaml": "^2.9.1"
+	},
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@types/bun": "^1.4.3",
+		"@types/hast": "^3.0.5",
+		"@types/mdast": "^4.0.4",
+		"eslint": "^10.13.0",
+		"eslint-plugin-svelte": "^3.23.1",
+		"globals": "^17.13.0",
+		"prettier": "^3.9.10",
+		"prettier-plugin-svelte": "^4.1.1",
+		"svelte-check": "^4.7.7",
+		"typescript": "^5",
+		"typescript-eslint": "^8.71.2"
+	}
+}

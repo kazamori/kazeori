@@ -1,0 +1,204 @@
+/*
+ * カザモリスタイルの配色とタイポグラフィ。
+ * 配色は pptx テンプレートの theme1.xml から書き起こした。座標系は 1920 x 1080 px（1pt = 2px）。
+ */
+
+.kz-theme {
+	--kz-accent5: #ff9a1f;
+	--kz-accent6: #ff7401;
+	--kz-dk2: #2d3847;
+	--kz-lt2: #e7e6e6;
+
+	--kz-text: #3a3a3a;
+	--kz-text-muted: #5f5f5f;
+	--kz-text-faint: #a6a6a6;
+	--kz-surface: #f2f2f2;
+	--kz-white: #ffffff;
+
+	--kz-font-heading: 'Metropolis', 'Noto Sans JP', sans-serif;
+	--kz-font-body: 'Roboto', 'Noto Sans JP', sans-serif;
+	--kz-font-mono: ui-monospace, 'SFMono-Regular', 'Menlo', 'Consolas', 'Noto Sans JP', monospace;
+
+	color: var(--kz-text);
+	font-family: var(--kz-font-body);
+	/* 和文の改行を文節単位にし、行頭の禁則を効かせる */
+	word-break: auto-phrase;
+	line-break: strict;
+	overflow-wrap: anywhere;
+}
+
+.kz-theme[data-color='blue'] {
+	--kz-accent1: #4061ad;
+	--kz-accent2: #4372b9;
+	--kz-accent3: #4c96d1;
+	--kz-accent4: #44c8f5;
+}
+
+.kz-theme[data-color='green'] {
+	--kz-accent1: #1db26b;
+	--kz-accent2: #6cbf67;
+	--kz-accent3: #a3cf62;
+	--kz-accent4: #d4e05b;
+}
+
+/* markdown から生成した本文 */
+.kz-prose {
+	font-size: 32px;
+	line-height: 1.6;
+	color: var(--kz-text-muted);
+}
+
+.kz-prose > :first-child {
+	margin-top: 0;
+}
+
+.kz-prose > :last-child {
+	margin-bottom: 0;
+}
+
+.kz-prose p {
+	margin: 0 0 0.6em;
+}
+
+.kz-prose h1,
+.kz-prose h2,
+.kz-prose h3,
+.kz-prose h4 {
+	font-family: var(--kz-font-heading);
+	color: var(--kz-text);
+	font-weight: 700;
+	line-height: 1.3;
+	margin: 0.8em 0 0.4em;
+}
+
+.kz-prose h1 {
+	font-size: 1.6em;
+}
+
+.kz-prose h2 {
+	font-size: 1.3em;
+}
+
+.kz-prose h3 {
+	font-size: 1.1em;
+	color: var(--kz-accent1);
+}
+
+.kz-prose h4 {
+	font-size: 1em;
+}
+
+.kz-prose a {
+	color: var(--kz-accent1);
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
+.kz-prose strong {
+	color: var(--kz-text);
+	font-weight: 700;
+}
+
+.kz-prose ul,
+.kz-prose ol {
+	margin: 0 0 0.6em;
+	padding-left: 1.4em;
+}
+
+.kz-prose li {
+	margin: 0.2em 0;
+}
+
+.kz-prose ul > li::marker {
+	color: var(--kz-accent1);
+}
+
+.kz-prose ol > li::marker {
+	color: var(--kz-accent1);
+	font-family: var(--kz-font-heading);
+	font-weight: 700;
+}
+
+.kz-prose blockquote {
+	margin: 0 0 0.6em;
+	padding: 0.2em 0 0.2em 1em;
+	border-left: 6px solid var(--kz-accent1);
+	color: var(--kz-text);
+}
+
+.kz-prose code {
+	font-family: var(--kz-font-mono);
+	font-size: 0.85em;
+	background: var(--kz-surface);
+	padding: 0.1em 0.3em;
+	border-radius: 4px;
+}
+
+.kz-prose pre {
+	font-family: var(--kz-font-mono);
+	font-size: 22px;
+	line-height: 1.5;
+	margin: 0 0 0.6em;
+	padding: 20px 24px;
+	background: #f6f8fa !important;
+	border-left: 6px solid var(--kz-accent1);
+	overflow: hidden;
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.kz-prose pre code {
+	background: none;
+	padding: 0;
+	font-size: inherit;
+}
+
+.kz-prose pre .line.dimmed {
+	opacity: 0.35;
+}
+
+.kz-prose pre .line.highlighted {
+	background: color-mix(in srgb, var(--kz-accent4) 22%, transparent);
+	display: inline-block;
+	width: 100%;
+}
+
+.kz-prose table {
+	border-collapse: collapse;
+	margin: 0 0 0.6em;
+	font-size: 0.85em;
+}
+
+.kz-prose th,
+.kz-prose td {
+	padding: 0.35em 0.8em;
+	border-bottom: 1px solid var(--kz-lt2);
+	text-align: left;
+}
+
+.kz-prose th {
+	background: var(--kz-accent1);
+	color: var(--kz-white);
+	font-family: var(--kz-font-heading);
+}
+
+.kz-prose img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+/* 文字がはみ出したスロット（dev server でだけ枠を出す） */
+.kz-dev [data-overflow] {
+	outline: 6px solid #e5484d;
+	outline-offset: -6px;
+}
+
+/* サブタイトル（本文の最初の ## 見出し）。上部の見出しと左右の段で共通に使う */
+.kz-subtitle {
+	margin: 12px 0 0;
+	font-family: var(--kz-font-heading);
+	font-weight: 700;
+	font-size: 28px;
+	line-height: 1.4;
+	color: var(--kz-accent1);
+}

@@ -1,0 +1,10 @@
+{
+	"extends": "$app/tsconfig",
+	"compilerOptions": {
+		"allowImportingTsExtensions": true,
+		"noEmit": true,
+		"types": ["$app/types", "bun"]
+	},
+	"include": ["src", "test", "cli", "scripts", "*"],
+	"exclude": ["src/service-worker"]
+}

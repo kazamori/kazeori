@@ -1,0 +1,92 @@
+<!-- 締めのスライド。全面 accent1 に、お礼の文言とロゴを置く。 -->
+<script module lang="ts">
+	import type { LayoutChrome } from '../types';
+
+	export const chrome: LayoutChrome = 'none';
+</script>
+
+<script lang="ts">
+	import Html from '../components/Html.svelte';
+	import Logo from '../components/Logo.svelte';
+	import Square from '../components/Square.svelte';
+	import type { LayoutProps } from '../types';
+
+	let { slide, brand }: LayoutProps = $props();
+</script>
+
+<div class="end">
+	<Square x={1536.9} y={65.5} size={162} color="var(--kz-accent2)" />
+	<Square x={1698.9} y={227.5} size={221.1} color="var(--kz-accent4)" />
+	<Square x={1288.5} y={448.6} size={410.4} color="var(--kz-accent3)" />
+	<Square x={1698.9} y={859} size={139.9} color="var(--kz-accent2)" />
+	<Square x={1067.4} y={858.9} size={221.1} color="var(--kz-accent2)" />
+	<Square x={0} y={0} size={63.2} color="var(--kz-accent2)" />
+	<Square x={63.2} y={62.8} size={36.7} color="var(--kz-accent3)" />
+
+	<div class="message kz-fit">
+		<p class="thanks">{slide.title ?? 'ありがとうございました'}</p>
+		{#if slide.titleAccent}<p class="accent">{slide.titleAccent}</p>{/if}
+		<Html html={slide.bodyHtml} class="end-body" />
+	</div>
+
+	<div class="logo">
+		<Logo src={brand.logoWhite} name={brand.name} white height={64} />
+	</div>
+	{#if brand.copyright}<p class="copyright">{brand.copyright}</p>{/if}
+</div>
+
+<style>
+	.end {
+		position: absolute;
+		inset: 0;
+		background: var(--kz-accent1);
+		color: var(--kz-white);
+	}
+
+	.message {
+		position: absolute;
+		left: 109.5px;
+		top: 300px;
+		width: 1100px;
+		height: 440px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		overflow: hidden;
+	}
+
+	.thanks {
+		margin: 0;
+		font-family: var(--kz-font-heading);
+		font-weight: 700;
+		font-size: 96px;
+		line-height: 1.2;
+	}
+
+	.accent {
+		margin: 16px 0 0;
+		font-family: var(--kz-font-heading);
+		font-weight: 700;
+		font-size: 56px;
+		color: var(--kz-accent4);
+	}
+
+	.message :global(.end-body) {
+		margin-top: 32px;
+		color: inherit;
+	}
+
+	.logo {
+		position: absolute;
+		left: 129.4px;
+		top: 860px;
+	}
+
+	.copyright {
+		position: absolute;
+		left: 109.5px;
+		top: 980px;
+		margin: 0;
+		font-size: 22px;
+	}
+</style>
