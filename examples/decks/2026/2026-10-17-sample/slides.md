@@ -128,6 +128,22 @@ title: 2 段組み
 | 区切り | `::right::` |
 
 ---
+layout: compare
+title: 2 枚の画像を
+titleAccent: 比べる
+---
+
+- ### Before
+  置き換える前
+- ### After
+  置き換えた後
+
+![](pattern:fractal-fixed)
+![](pattern:fractal-inward)
+
+画像は枠に収めて描くので、縦横比の違う図も切れずに並べられます。
+
+---
 layout: image-left
 image: pattern:fractal-clockwise
 title: Featured Picture
