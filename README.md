@@ -432,6 +432,14 @@ Svelte のコンポーネントを書くときは、`.claude/skills/` にある 
 
 ## ライセンス
 
-MIT License です。
-同梱のフォントのライセンスは、Metropolis が Unlicense（パブリックドメイン）、Roboto が Apache License 2.0、Noto Sans JP が SIL Open Font License 1.1 です。
-`examples/` の archify の図は、archify の MIT License に従います。
+kazeori は MIT License で公開しています（`LICENSE`）。
+
+カザモリスタイルのデザイン（配色、レイアウト、装飾）は、カザモリ合同会社がデザイナーに発注したスライドテンプレートを元に、HTML と CSS で書き起こしたものです。
+このデザインも同じく MIT License で利用できます。
+カザモリ合同会社のロゴと商標は、このリポジトリに含まれず、利用も許諾していません。
+
+同梱または依存しているものは、それぞれのライセンスに従います。
+
+- フォント：Metropolis（Unlicense）、Roboto（Apache License 2.0）、Noto Sans JP（SIL Open Font License 1.1）
+- `examples/` の archify の図：archify の MIT License（同じディレクトリの `LICENSE`）
+- `.claude/skills/` の Svelte のスキル：sveltejs/ai-tools の MIT License（同じディレクトリの `LICENSE`）
