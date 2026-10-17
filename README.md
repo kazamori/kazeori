@@ -1,5 +1,7 @@
 # kazeori
 
+<img src="docs/logo/kazeori.png" alt="kazeori のロゴ" width="160">
+
 kazeori（風織り）は、カザモリスタイルのスライドを markdown から生成するツールです。
 カザモリスタイルは、カザモリ合同会社のスライドテンプレートから書き起こした配色、レイアウト、装飾のことです。
 内容は Slidev とほぼ同じ書式の markdown で書き、ブラウザでの発表と PDF の出力に使います。

@@ -22,12 +22,14 @@ SvelteKit 3（Svelte 5）で描画し、bun で動かします。
 | `src/lib/components/` | レイアウトが使う部品（SlideHeader、SideColumn、SlideTitle、Picture、Pattern など） |
 | `src/lib/patterns.ts` | `pattern:<名前>` の模様（波の模様とフラクタルの模様） |
 | `src/lib/themes/base.css` | 配色（blue / green）と本文の書式 |
+| `src/lib/assets/` | kazeori のアプリのアイコン（favicon など） |
 | `src/lib/index.ts` | 独自レイアウト向けの公開 API |
 | `src/routes/` | デッキ一覧、発表ビュー、印刷ビュー |
 | `examples/` | ロゴのないサンプル workspace。全レイアウトを使うサンプルデッキがある |
 | `templates/` | kazeori に同梱するデッキの雛形 |
 | `test/` | `bun test` の単体テストとフィクスチャ |
 | `docs/architecture/` | archify で作った構成図（定義、HTML、PNG） |
+| `docs/logo/` | kazeori のロゴ（`original.png` が原本） |
 
 ## コマンド
 

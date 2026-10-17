@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { decks } from 'virtual:kazeori/decks';
 	import { formatDate } from '#lib/format.ts';
+	import logo from '#lib/assets/logo.png';
 
 	let groups = $derived.by(() => {
 		const byYear: Record<string, typeof decks> = {};
@@ -19,7 +20,7 @@
 </svelte:head>
 
 <main class="kz-theme" data-color="blue">
-	<h1>デッキ</h1>
+	<h1><img src={logo} alt="" width="40" height="40" />デッキ</h1>
 	{#if decks.length === 0}
 		<p>デッキがありません。<code>kazeori new &lt;name&gt;</code> で作成してください。</p>
 	{/if}
@@ -53,6 +54,9 @@
 	}
 
 	h1 {
+		display: flex;
+		align-items: center;
+		gap: 12px;
 		font-family: var(--kz-font-heading);
 		color: var(--kz-accent1);
 	}
