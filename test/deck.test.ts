@@ -188,6 +188,59 @@ describe('parseDeck', () => {
 		}
 	});
 
+	test('レイアウトが描かない画像や図は警告する（#3）', async () => {
+		const dir = path.join(wsRoot, 'decks/2026/2026-01-05-visuals');
+		fs.mkdirSync(dir, { recursive: true });
+		fs.copyFileSync(
+			path.join(wsRoot, 'decks/2026/2026-01-01-basic/diagrams/overview.html'),
+			path.join(dir, 'figure.html')
+		);
+		fs.writeFileSync(
+			path.join(dir, 'slides.md'),
+			[
+				'---',
+				'title: 画像',
+				'---',
+				'',
+				'---',
+				'layout: two-cols',
+				'---',
+				'',
+				'![](pattern:wave)',
+				'![](pattern:rise)',
+				'',
+				'::right::',
+				'',
+				'右',
+				'',
+				'---',
+				'layout: center',
+				'---',
+				'',
+				'![](pattern:wave)',
+				'',
+				'---',
+				'layout: image-left',
+				'---',
+				'',
+				'![](pattern:wave)',
+				'![](./figure.html)',
+				''
+			].join('\n')
+		);
+		try {
+			const { diagnostics } = await parseDeck(loadWorkspace(wsRoot), '2026/2026-01-05-visuals', {
+				resolveAsset
+			});
+			expect(diagnostics.map((d) => [d.line, d.message])).toEqual([
+				[16, 'center レイアウトは画像を描きません'],
+				[22, 'image-left レイアウトは archify の図を描きません']
+			]);
+		} finally {
+			fs.rmSync(dir, { recursive: true, force: true });
+		}
+	});
+
 	test('不備のあるデッキは、行番号付きのエラーを返す', async () => {
 		const { diagnostics } = await parseDeck(loadWorkspace(brokenRoot), '2026/bad', {
 			resolveAsset

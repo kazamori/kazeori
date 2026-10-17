@@ -41,6 +41,38 @@ export const layoutAliases: Record<string, string> = {
 /** 画像が必要なレイアウト。画像がなければ警告する。 */
 export const layoutsNeedingImage = new Set(['image-left', 'image-right', 'image']);
 
+/**
+ * 組み込みレイアウトが描く画像（画像だけの段落とフロントマターの image）の数と、archify の図を描くか。
+ * これを超える画像や、描かない図は、check で警告する（書いた画像が黙って消えないようにするため）。
+ * 箇条書きの項目の画像（team、feature-grid のアイコンなど）は数えない。
+ */
+export const layoutVisuals: Record<string, { images: number; figures: boolean }> = {
+	cover: { images: 1, figures: false },
+	'cover-light': { images: 1, figures: false },
+	section: { images: 1, figures: false },
+	default: { images: 1, figures: true },
+	center: { images: 0, figures: false },
+	full: { images: 1, figures: true },
+	agenda: { images: 0, figures: false },
+	references: { images: 0, figures: false },
+	end: { images: 0, figures: false },
+	diagram: { images: 1, figures: true },
+	'two-cols': { images: Infinity, figures: true },
+	features: { images: 0, figures: false },
+	'feature-grid': { images: 0, figures: false },
+	'image-left': { images: 1, figures: false },
+	'image-right': { images: 1, figures: false },
+	image: { images: 1, figures: false },
+	'three-images': { images: 3, figures: false },
+	gallery: { images: 9, figures: false },
+	quote: { images: 1, figures: false },
+	fact: { images: 0, figures: false },
+	profile: { images: 1, figures: false },
+	team: { images: 0, figures: false },
+	process: { images: 0, figures: false },
+	timeline: { images: 0, figures: false }
+};
+
 const slideKeys = new Set([
 	'layout',
 	'class',

@@ -11,7 +11,7 @@ import { toString } from 'mdast-util-to-string';
 import type { ArchifyFigureData, Slide, SlideImage, SlideItem } from '../types.ts';
 import { asString, normalizeTitle, report, type DeckContext } from './context.ts';
 import { createImageResolver, type ImageResolver } from './images.ts';
-import { layoutsNeedingImage } from './keys.ts';
+import { layoutsNeedingImage, layoutVisuals } from './keys.ts';
 import {
 	createHtmlRenderer,
 	isImageOnlyParagraph,
@@ -31,18 +31,28 @@ interface SlideScope {
 	raw: RawSlide;
 	resolveImage: ImageResolver;
 	render: HtmlRenderer;
+	/** 積んだ警告（同じ警告を重ねないため） */
+	warned: Set<string>;
 }
 
 /**
  * 本文中の画像の参照先を書き換えた複製を返す（元の節は変えない）。
- * 文中には描けないもの（archify の図、模様、見つからない画像）は取り除き、図は警告する。
+ * 文中には描けないもの（archify の図、模様、見つからない画像）は取り除き、図と模様は警告する。
+ * 箇条書きの項目の中の画像は、項目の画像として別に描くので警告しない。
  * 同じ節を複数の部分（introHtml と bodyHtml など）に使うので、複製してから書き換える。
  */
 function rewriteInlineImages(nodes: RootContent[], scope: SlideScope, lineOf: LineOf) {
-	const visit = (parent: Parent) => {
+	const warn = (line: number, message: string) => {
+		// 同じ節を何度も書き換えるので、同じ警告は一度だけ積む
+		const key = `${line}:${message}`;
+		if (scope.warned.has(key)) return;
+		scope.warned.add(key);
+		report(scope.ctx, 'warning', scope.raw.file, line, message);
+	};
+	const visit = (parent: Parent, inItem: boolean) => {
 		parent.children = parent.children.filter((child) => {
 			if (child.type !== 'image') {
-				if ('children' in child) visit(child);
+				if ('children' in child) visit(child, inItem || child.type === 'listItem');
 				return true;
 			}
 			const resolved = scope.resolveImage(child.url, child.alt ?? '', lineOf(child));
@@ -50,20 +60,23 @@ function rewriteInlineImages(nodes: RootContent[], scope: SlideScope, lineOf: Li
 				child.url = resolved.image.src;
 				return true;
 			}
-			if (resolved?.kind === 'figure') {
-				report(
-					scope.ctx,
-					'warning',
-					scope.raw.file,
+			if (resolved?.kind === 'figure' && !inItem) {
+				warn(
 					lineOf(child),
 					'archify の図は、既定のスロットに画像だけの段落として置いてください。この図は描画しません'
+				);
+			}
+			if (resolved?.kind === 'image' && resolved.image.pattern && !inItem) {
+				warn(
+					lineOf(child),
+					'模様は、既定のスロットの画像だけの段落かフロントマターの image で指定してください。この位置の模様は描画しません'
 				);
 			}
 			return false;
 		});
 	};
 	const root: Parent = { type: 'root', children: structuredClone(nodes) } as Parent;
-	visit(root);
+	visit(root, false);
 	// 画像を取り除いて空になった段落は残さない
 	return (root.children as RootContent[]).filter(
 		(node) => !(node.type === 'paragraph' && node.children.length === 0)
@@ -123,7 +136,8 @@ export async function buildSlide(
 		ctx,
 		raw,
 		resolveImage: createImageResolver(ctx, raw.file),
-		render: await createHtmlRenderer(parts.map((p) => p.tree))
+		render: await createHtmlRenderer(parts.map((p) => p.tree)),
+		warned: new Set()
 	};
 
 	const images: SlideImage[] = [];
@@ -205,6 +219,22 @@ export async function buildSlide(
 			raw.file,
 			raw.line,
 			'diagram レイアウトには図（archify の HTML か画像）を置いてください'
+		);
+	}
+	const visuals = layoutVisuals[layout];
+	if (visuals && figures.length > 0 && !visuals.figures) {
+		report(ctx, 'warning', raw.file, raw.line, `${layout} レイアウトは archify の図を描きません`);
+	}
+	const drawable = images.length + (visuals?.figures ? figures.length : 0);
+	if (visuals && drawable > visuals.images) {
+		report(
+			ctx,
+			'warning',
+			raw.file,
+			raw.line,
+			visuals.images === 0
+				? `${layout} レイアウトは画像を描きません`
+				: `${layout} レイアウトが描く画像は ${visuals.images} 枚までです。残りの ${drawable - visuals.images} 枚は描きません`
 		);
 	}
 	if (layoutsNeedingImage.has(layout) && images.length === 0) {
