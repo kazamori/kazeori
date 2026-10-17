@@ -15,11 +15,11 @@
 
 <div class="fact kz-fit">
 	{#if slide.title}
-		<p class="value">
+		<p class="value kz-lines">
 			{slide.title}{#if slide.titleAccent}<span class="unit">{slide.titleAccent}</span>{/if}
 		</p>
 	{/if}
-	{#if slide.subtitle}<p class="subtitle">{slide.subtitle}</p>{/if}
+	{#if slide.subtitle}<p class="subtitle kz-lines">{slide.subtitle}</p>{/if}
 	<Html html={body} class="fact-body" />
 	{#if stats.length > 0}
 		<div class="stats">

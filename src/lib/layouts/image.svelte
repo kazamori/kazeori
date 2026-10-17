@@ -15,8 +15,8 @@
 <div class="image"><Picture image={slide.images[0]} /></div>
 {#if slide.title || slide.subtitle}
 	<div class="caption kz-fit">
-		{#if slide.title}<p class="title">{slide.title}</p>{/if}
-		{#if slide.subtitle}<p class="subtitle">{slide.subtitle}</p>{/if}
+		{#if slide.title}<p class="title kz-lines">{slide.title}</p>{/if}
+		{#if slide.subtitle}<p class="subtitle kz-lines">{slide.subtitle}</p>{/if}
 	</div>
 {/if}
 

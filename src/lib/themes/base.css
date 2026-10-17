@@ -196,9 +196,15 @@
 /* サブタイトル（本文の最初の ## 見出し）。上部の見出しと左右の段で共通に使う */
 .kz-subtitle {
 	margin: 12px 0 0;
+	white-space: pre-line;
 	font-family: var(--kz-font-heading);
 	font-weight: 700;
 	font-size: 28px;
 	line-height: 1.4;
 	color: var(--kz-accent1);
+}
+
+/* タイトルやサブタイトルを素の要素で描くときに、書き手が明示した改行を保つ */
+.kz-lines {
+	white-space: pre-line;
 }

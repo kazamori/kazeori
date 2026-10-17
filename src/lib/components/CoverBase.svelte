@@ -49,7 +49,7 @@
 
 	<div class="text kz-fit">
 		<SlideTitle {title} accent={slide.titleAccent} size={96} light={!light} />
-		{#if subtitle}<p class="subtitle">{subtitle}</p>{/if}
+		{#if subtitle}<p class="subtitle kz-lines">{subtitle}</p>{/if}
 		<Html html={slide.bodyHtml} class="cover-body" />
 	</div>
 

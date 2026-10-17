@@ -9,7 +9,7 @@
 import type { List, ListItem, Parent, RootContent } from 'mdast';
 import { toString } from 'mdast-util-to-string';
 import type { ArchifyFigureData, Slide, SlideImage, SlideItem } from '../types.ts';
-import { asString, report, type DeckContext } from './context.ts';
+import { asString, normalizeTitle, report, type DeckContext } from './context.ts';
 import { createImageResolver, type ImageResolver } from './images.ts';
 import { layoutsNeedingImage } from './keys.ts';
 import {
@@ -143,8 +143,10 @@ export async function buildSlide(
 		layout,
 		className: typeof fm.class === 'string' ? fm.class : '',
 		frontmatter: fm,
-		title: typeof fm.title === 'string' || typeof fm.title === 'number' ? String(fm.title) : null,
-		titleAccent: asString(fm.titleAccent),
+		title: normalizeTitle(
+			typeof fm.title === 'string' || typeof fm.title === 'number' ? String(fm.title) : null
+		),
+		titleAccent: normalizeTitle(asString(fm.titleAccent)),
 		subtitle: null,
 		introHtml: '',
 		items: [],
@@ -179,10 +181,10 @@ export async function buildSlide(
 
 		if (slide.title === null) {
 			const i = body.findIndex(isHeading(1));
-			if (i >= 0) slide.title = toString(body.splice(i, 1)[0]);
+			if (i >= 0) slide.title = normalizeTitle(toString(body.splice(i, 1)[0]));
 		}
 		const sub = body.findIndex(isHeading(2));
-		if (sub >= 0) slide.subtitle = toString(body.splice(sub, 1)[0]);
+		if (sub >= 0) slide.subtitle = normalizeTitle(toString(body.splice(sub, 1)[0]));
 
 		const listIndex = body.findIndex((node) => node.type === 'list');
 		if (listIndex >= 0) {

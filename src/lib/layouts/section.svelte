@@ -32,7 +32,7 @@
 </div>
 <div class="rule"></div>
 <div class="sub kz-fit">
-	{#if slide.subtitle}<p class="subtitle">{slide.subtitle}</p>{/if}
+	{#if slide.subtitle}<p class="subtitle kz-lines">{slide.subtitle}</p>{/if}
 	<Html html={slide.bodyHtml} />
 </div>
 

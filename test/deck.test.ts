@@ -134,6 +134,40 @@ describe('parseDeck', () => {
 		}
 	});
 
+	test('タイトルの <br> と YAML の改行を改行にし、ほかの HTML は文字のまま残す（#10）', async () => {
+		const dir = path.join(wsRoot, 'decks/2026/2026-01-03-title');
+		fs.mkdirSync(dir, { recursive: true });
+		fs.writeFileSync(
+			path.join(dir, 'slides.md'),
+			[
+				'---',
+				'title: |',
+				'  人に見せる図、',
+				'  自分が分かるための図',
+				'titleAccent: 2 行目<br/>3 行目',
+				'---',
+				'',
+				'---',
+				'',
+				'# 見出しの<BR>改行と <b>太字</b>',
+				'',
+				'## サブ<br>タイトル',
+				''
+			].join('\n')
+		);
+		try {
+			const { deck } = await parseDeck(loadWorkspace(wsRoot), '2026/2026-01-03-title', {
+				resolveAsset
+			});
+			expect(deck.title).toBe('人に見せる図、\n自分が分かるための図');
+			expect(deck.slides[0].titleAccent).toBe('2 行目\n3 行目');
+			expect(deck.slides[1].title).toBe('見出しの\n改行と <b>太字</b>');
+			expect(deck.slides[1].subtitle).toBe('サブ\nタイトル');
+		} finally {
+			fs.rmSync(dir, { recursive: true, force: true });
+		}
+	});
+
 	test('不備のあるデッキは、行番号付きのエラーを返す', async () => {
 		const { diagnostics } = await parseDeck(loadWorkspace(brokenRoot), '2026/bad', {
 			resolveAsset

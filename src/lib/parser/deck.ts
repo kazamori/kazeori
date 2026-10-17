@@ -5,7 +5,14 @@ import path from 'node:path';
 import type { ColorName, Deck, Diagnostic, ResolvedBrand, Slide } from '../types.ts';
 import { colors } from '../types.ts';
 import { DECK_FILE, isColor, mergeBrand, parseBrand, type Workspace } from '../workspace/config.ts';
-import { asString, isRecord, report, type AssetResolver, type DeckContext } from './context.ts';
+import {
+	asString,
+	isRecord,
+	normalizeTitle,
+	report,
+	type AssetResolver,
+	type DeckContext
+} from './context.ts';
 import { builtinLayouts, checkKeys, layoutAliases, themeConfigKeys } from './keys.ts';
 import { buildSlide } from './slide.ts';
 import { expandSources, readText } from './sources.ts';
@@ -143,7 +150,7 @@ export async function parseDeck(
 	const headmatter = top[0]?.frontmatter ?? {};
 
 	const color = resolveColor(headmatter, file, ctx);
-	const title = asString(headmatter.title) ?? id.split('/').at(-1) ?? id;
+	const title = normalizeTitle(asString(headmatter.title)) ?? id.split('/').at(-1) ?? id;
 	const author = asString(headmatter.author) ?? workspace.defaults.author;
 	const event = asString(headmatter.event);
 	const date = asString(headmatter.date);
