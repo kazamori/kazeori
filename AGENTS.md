@@ -60,7 +60,7 @@ bun run kazeori pdf --deck sample   # サンプルデッキの PDF を examples/
 
 ## レイアウトの追加と変更
 
-- 組み込みレイアウトを足したら、`src/lib/parser/keys.ts` の `builtinLayouts` に名前を加える。
+- 組み込みレイアウトを足したら、`src/lib/parser/keys.ts` の `builtinLayouts` に名前を、`layoutVisuals` に描く画像の数と archify の図を描くかを加える（描かない画像を `check` で警告するため）。
 - 上部の見出しには `SlideHeader`、左右の段には `SideColumn` を使い、位置と大きさをほかのレイアウトとそろえる。
 - 枠の装飾（四隅の正方形、ページ番号、フッター）を描かないレイアウトは、`<script module>` で `export const chrome = 'none'` を書き出す。
 - 文字がはみ出しうる領域には `.kz-fit` を付ける。dev server と `kazeori pdf` がはみ出しを検出する。
