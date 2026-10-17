@@ -1,0 +1,14 @@
+node_modules
+.svelte-kit
+.kazeori
+dist
+build
+.DS_Store
+*.log
+test/fixtures/brand-override.yaml
+# archify が作図のたびに作る検査の記録
+docs/architecture/**/*.browser-check.json
+docs/architecture/**/*.delivery.json
+docs/architecture/**/*.finalize*.json
+docs/architecture/**/final/
+docs/architecture/**/review-*/

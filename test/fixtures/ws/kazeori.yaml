@@ -1,0 +1,10 @@
+brand:
+  name: Test Inc.
+  copyright: "© {year} {name}"
+  logo:
+    blue: ./brand/logo.png
+    white: ./brand/logo.png
+
+defaults:
+  color: green
+  author: 発表者

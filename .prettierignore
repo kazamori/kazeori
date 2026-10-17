@@ -1,0 +1,13 @@
+node_modules
+.svelte-kit
+.kazeori
+dist
+build
+bun.lock
+docs
+test/fixtures
+.claude
+**/dist
+**/.kazeori
+examples/**/diagrams
+*.md

@@ -1,0 +1,7 @@
+# サンプル workspace の設定。ロゴは置かず、架空の社名だけを渡す。
+brand:
+  name: Example Inc.
+  copyright: '© {year} {name}'
+
+defaults:
+  color: blue
