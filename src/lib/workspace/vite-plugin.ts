@@ -1,6 +1,8 @@
 // workspace のデッキとレイアウトを、仮想モジュールとして SvelteKit に渡す Vite プラグイン。
 // - virtual:kazeori/decks: 全デッキ（画像は Vite の import で配信用の URL に変える）
 // - virtual:kazeori/layouts: レイアウトの名前 → { component, chrome }（組み込みと workspace の独自レイアウト）
+import { createHash } from 'node:crypto';
+import fs from 'node:fs';
 import path from 'node:path';
 import type { Plugin, ViteDevServer } from 'vite';
 import { builtinLayouts } from '../parser/deck.ts';
@@ -44,6 +46,35 @@ function layoutsModule(files: Record<string, string>): string {
 	return [...imports, `export const layouts = {\n${map.join(',\n')}\n};`].join('\n');
 }
 
+/**
+ * kazeori のソース（src/ と package.json）の内容のハッシュ。
+ *
+ * workspace の node_modules/kazeori から動くとき、Vite は kazeori のソースを依存パッケージとみなし、
+ * URL に ?v=<browserHash> を付けて長期キャッシュ（immutable）で返す。
+ * browserHash は kazeori の bun.lock と Vite の設定から作られるので、kazeori のコードだけが変わる更新では変わらず、
+ * ブラウザが更新前のファイルを使い続ける（#11）。
+ * このハッシュを Vite の設定（resolve）に含めて、kazeori のソースが変わったら browserHash と URL が変わるようにする。
+ */
+export function kazeoriSourceHash(root = kazeoriRoot): string {
+	const hash = createHash('sha256');
+	const files: string[] = [path.join(root, 'package.json')];
+	const walk = (dir: string) => {
+		for (const entry of fs
+			.readdirSync(dir, { withFileTypes: true })
+			.sort((a, b) => a.name.localeCompare(b.name))) {
+			const abs = path.join(dir, entry.name);
+			if (entry.isDirectory()) walk(abs);
+			else files.push(abs);
+		}
+	};
+	walk(path.join(root, 'src'));
+	for (const file of files) {
+		hash.update(path.relative(root, file));
+		hash.update(fs.readFileSync(file));
+	}
+	return hash.digest('hex').slice(0, 16);
+}
+
 function formatDiagnostic(d: Diagnostic, root: string): string {
 	return `${path.relative(root, d.file)}${d.line ? `:${d.line}` : ''}: ${d.message}`;
 }
@@ -83,7 +114,11 @@ export function kazeoriWorkspace(options: LoadOptions): Plugin {
 			return {
 				resolve: {
 					dedupe: ['svelte'],
-					alias: { kazeori: path.join(kazeoriRoot, 'src/lib/index.ts') }
+					alias: {
+						kazeori: path.join(kazeoriRoot, 'src/lib/index.ts'),
+						// どの import にも当たらない別名。kazeori のソースのハッシュを browserHash に含めるためのもの（#11）
+						[`kazeori-source-${kazeoriSourceHash()}`]: kazeoriRoot
+					}
 				},
 				server: { fs: { allow: [kazeoriRoot, workspace.root] } }
 			};
