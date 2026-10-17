@@ -138,8 +138,8 @@ titleAccent: 比べる
 - ### After
   置き換えた後
 
-![](pattern:fractal-fixed)
-![](pattern:fractal-inward)
+![](pattern:fractal-fixed "置き換える前の構成")
+![](pattern:fractal-inward "置き換えた後の構成")
 
 画像は枠に収めて描くので、縦横比の違う図も切れずに並べられます。
 
@@ -339,7 +339,7 @@ layout: diagram
 title: archify の図
 ---
 
-![データの流れ](./diagrams/dataflow/dataflow.html)
+![データの流れ](./diagrams/dataflow/dataflow.html "archify の公開サンプル（dataflow-product-analytics）")
 
 archify スキルで描いた図を、画像と同じ記法で埋め込みます。
 

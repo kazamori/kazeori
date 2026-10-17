@@ -142,8 +142,8 @@ export async function buildSlide(
 
 	const images: SlideImage[] = [];
 	const figures: ArchifyFigureData[] = [];
-	const collect = (url: string, alt: string, line: number) => {
-		const resolved = scope.resolveImage(url, alt, line);
+	const collect = (url: string, alt: string, line: number, caption: string | null = null) => {
+		const resolved = scope.resolveImage(url, alt, line, caption);
 		if (resolved?.kind === 'image') images.push(resolved.image);
 		if (resolved?.kind === 'figure') figures.push(resolved.figure);
 	};
@@ -186,7 +186,7 @@ export async function buildSlide(
 		for (const node of part.tree.children) {
 			if (isImageOnlyParagraph(node) && node.type === 'paragraph') {
 				for (const img of node.children) {
-					if (img.type === 'image') collect(img.url, img.alt ?? '', lineOf(img));
+					if (img.type === 'image') collect(img.url, img.alt ?? '', lineOf(img), img.title ?? null);
 				}
 			} else {
 				body.push(node);

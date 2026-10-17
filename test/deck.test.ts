@@ -241,6 +241,50 @@ describe('parseDeck', () => {
 		}
 	});
 
+	test('画像のタイトルをキャプションとして読む（#7）', async () => {
+		const dir = path.join(wsRoot, 'decks/2026/2026-01-06-caption');
+		fs.mkdirSync(dir, { recursive: true });
+		fs.copyFileSync(
+			path.join(wsRoot, 'decks/2026/2026-01-01-basic/diagrams/overview.html'),
+			path.join(dir, 'figure.html')
+		);
+		fs.writeFileSync(
+			path.join(dir, 'slides.md'),
+			[
+				'---',
+				'title: キャプション',
+				'---',
+				'',
+				'---',
+				'layout: two-cols',
+				'---',
+				'',
+				'![模様](pattern:wave "模様の説明")',
+				'![図](./figure.html "図の出典")',
+				'',
+				'::right::',
+				'',
+				'![写真](https://example.com/a.png "右の段の説明")',
+				''
+			].join('\n')
+		);
+		try {
+			const { deck } = await parseDeck(loadWorkspace(wsRoot), '2026/2026-01-06-caption', {
+				resolveAsset
+			});
+			const slide = deck.slides[1];
+			expect(slide.images).toEqual([
+				{ src: '', alt: '模様', pattern: 'wave', caption: '模様の説明' }
+			]);
+			expect(slide.figures[0].caption).toBe('図の出典');
+			expect(slide.slots.right).toContain(
+				'<span class="kz-figure"><img src="https://example.com/a.png" alt="写真"><span class="kz-caption">右の段の説明</span></span>'
+			);
+		} finally {
+			fs.rmSync(dir, { recursive: true, force: true });
+		}
+	});
+
 	test('不備のあるデッキは、行番号付きのエラーを返す', async () => {
 		const { diagnostics } = await parseDeck(loadWorkspace(brokenRoot), '2026/bad', {
 			resolveAsset

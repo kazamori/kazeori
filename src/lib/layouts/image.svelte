@@ -12,7 +12,7 @@
 	let { slide }: LayoutProps = $props();
 </script>
 
-<div class="image"><Picture image={slide.images[0]} /></div>
+<div class="image"><Picture image={slide.images[0]} overlayCaption /></div>
 {#if slide.title || slide.subtitle}
 	<div class="caption kz-fit">
 		{#if slide.title}<p class="title kz-lines">{slide.title}</p>{/if}

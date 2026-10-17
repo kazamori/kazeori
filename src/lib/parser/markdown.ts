@@ -34,6 +34,34 @@ export function isImageOnlyParagraph(node: RootContent): boolean {
 export type HtmlRenderer = (nodes: RootContent[]) => string;
 
 /**
+ * 本文中の画像を hast にする。画像のタイトル（`![alt](src "キャプション")`）があれば、画像の下にキャプションを添える。
+ * 段落の中に置かれるので、<figure> ではなく <span> で包む（表示は CSS でブロックにする）。
+ */
+function imageToHast(node: Image): Element {
+	const img: Element = {
+		type: 'element',
+		tagName: 'img',
+		properties: { src: node.url, alt: node.alt ?? '' },
+		children: []
+	};
+	if (!node.title) return img;
+	return {
+		type: 'element',
+		tagName: 'span',
+		properties: { className: ['kz-figure'] },
+		children: [
+			img,
+			{
+				type: 'element',
+				tagName: 'span',
+				properties: { className: ['kz-caption'] },
+				children: [{ type: 'text', value: node.title }]
+			}
+		]
+	};
+}
+
+/**
  * mdast の節を HTML にする関数を作る。木に含まれるコードの言語を先に読み込んでおく。
  * markdown は workspace の持ち主が書いたもので、Slidev と同じく HTML の直書きも許す。
  */
@@ -46,7 +74,8 @@ export async function createHtmlRenderer(trees: Root[]): Promise<HtmlRenderer> {
 			allowDangerousHtml: true,
 			handlers: {
 				code: (_state, node: Code): Element =>
-					highlightToHast(highlighter, node.value, node.lang, node.meta)
+					highlightToHast(highlighter, node.value, node.lang, node.meta),
+				image: (_state, node: Image): Element => imageToHast(node)
 			}
 		});
 		return toHtml(hast, { allowDangerousHtml: true });

@@ -208,3 +208,21 @@
 .kz-lines {
 	white-space: pre-line;
 }
+
+/* 本文中の画像のキャプション（markdown の画像のタイトル） */
+.kz-prose .kz-figure {
+	display: block;
+	margin: 0 0 0.6em;
+}
+
+.kz-prose .kz-figure img {
+	display: block;
+}
+
+.kz-caption {
+	display: block;
+	margin-top: 8px;
+	font-size: 22px;
+	line-height: 1.4;
+	opacity: 0.8;
+}

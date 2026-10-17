@@ -44,19 +44,24 @@ function loadFigure(abs: string, alt: string, slideFile: string, line: number, c
 function resolve(
 	url: string,
 	alt: string,
+	caption: string | null,
 	slideFile: string,
 	line: number,
 	ctx: DeckContext
 ): ResolvedImage {
+	// キャプションがあるときだけ項目を持たせる
+	const extra = caption ? { caption } : {};
 	if (url.startsWith(PATTERN_PREFIX)) {
 		const name = url.slice(PATTERN_PREFIX.length);
-		if (isPatternName(name)) return { kind: 'image', image: { src: '', alt, pattern: name } };
+		if (isPatternName(name)) {
+			return { kind: 'image', image: { src: '', alt, pattern: name, ...extra } };
+		}
 		const known = patternNames.join(', ');
 		report(ctx, 'error', slideFile, line, `未知の模様「${name}」です。使える模様: ${known}`);
 		return null;
 	}
 	if (/^(?:[a-z]+:)?\/\//i.test(url) || url.startsWith('data:')) {
-		return { kind: 'image', image: { src: url, alt } };
+		return { kind: 'image', image: { src: url, alt, ...extra } };
 	}
 	const abs = locate(url, slideFile, ctx, line);
 	if (!fs.existsSync(abs)) {
@@ -65,9 +70,9 @@ function resolve(
 	}
 	if (path.extname(abs).toLowerCase() === '.html') {
 		const figure = loadFigure(abs, alt, slideFile, line, ctx);
-		return figure ? { kind: 'figure', figure } : null;
+		return figure ? { kind: 'figure', figure: { ...figure, ...extra } } : null;
 	}
-	return { kind: 'image', image: { src: ctx.resolveAsset(abs), alt } };
+	return { kind: 'image', image: { src: ctx.resolveAsset(abs), alt, ...extra } };
 }
 
 /**
@@ -76,9 +81,9 @@ function resolve(
  */
 export function createImageResolver(ctx: DeckContext, slideFile: string) {
 	const cache = new Map<string, ResolvedImage>();
-	return (url: string, alt: string, line: number): ResolvedImage => {
-		const key = `${url}\n${alt}`;
-		if (!cache.has(key)) cache.set(key, resolve(url, alt, slideFile, line, ctx));
+	return (url: string, alt: string, line: number, caption: string | null = null): ResolvedImage => {
+		const key = `${url}\n${alt}\n${caption ?? ''}`;
+		if (!cache.has(key)) cache.set(key, resolve(url, alt, caption, slideFile, line, ctx));
 		return cache.get(key)!;
 	};
 }

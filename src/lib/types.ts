@@ -27,6 +27,8 @@ export interface SlideImage {
 	alt: string;
 	/** `pattern:<名前>` で指定した模様の名前。このとき src は空 */
 	pattern?: string | null;
+	/** 図の下に添える説明（markdown の画像のタイトル `![alt](src "キャプション")`） */
+	caption?: string | null;
 }
 
 export interface SlideItem {
@@ -42,6 +44,8 @@ export interface ArchifyFigureData {
 	fontFaceCss: string;
 	svg: string;
 	preset: string | null;
+	/** 図の下に添える説明（markdown の画像のタイトル） */
+	caption?: string | null;
 }
 
 export interface Slide {
