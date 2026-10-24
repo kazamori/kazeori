@@ -3,6 +3,8 @@
   列数はフロントマターの columns（1〜4）で指定でき、省略すると項目数から決める
   （1〜2 個は 2 列、3 個は 3 列、4 個は 2 列 2 行、5 個以上は 3 列）。
   行が少ないときもカードは 2 行のときと同じ高さにとどめ、格子を本文領域の上下中央に置く。
+  文字の大きさは、列と行の多いほうで決める。カードが大きいほど大きくし、離れて見ても読めるようにする。
+  1 列のときは、横に長いカードを活かして項目名と説明を横に並べる。
 -->
 <script lang="ts">
 	import Html from '../components/Html.svelte';
@@ -34,6 +36,19 @@
 	let columnWidth = $derived((WIDTH - GAP * (columns - 1)) / columns);
 	// 1〜2 行のときは 2 行のときのカードの高さにそろえ、3 行以上は領域を等分する
 	let rowHeight = $derived((HEIGHT - GAP * (Math.max(rows, 2) - 1)) / Math.max(rows, 2));
+	// 1 列のときは、項目名と説明を横に並べる
+	let wide = $derived(columns === 1);
+	// 項目名と説明の文字の大きさ（列と行の多いほうが 2 以下、3、4 以上）
+	const TEXT_SIZES = [
+		{ title: 40, body: 32 },
+		{ title: 34, body: 27 },
+		{ title: 28, body: 22 }
+	];
+	// 1 列のときは文字を横に並べて高さを使わないので、行の数を 1 つ少なく数える
+	let density = $derived(
+		wide ? Math.max(rows - 1, 2) : Math.max(Math.min(columns, count), rows, 2)
+	);
+	let textSize = $derived(TEXT_SIZES[Math.min(density, 4) - 2]);
 </script>
 
 <SlideHeader {slide} align="center" intro={slide.introHtml} />
@@ -46,9 +61,11 @@
 	style:--columns={Math.min(columns, count)}
 	style:--column-width="{columnWidth}px"
 	style:--row-height="{rowHeight}px"
+	style:--title-size="{textSize.title}px"
+	style:--body-size="{textSize.body}px"
 >
 	{#each slide.items as item, i (i)}
-		<li class="card" style:--color={itemColorAt(i)}>
+		<li class={['card', { wide }]} style:--color={itemColorAt(i)}>
 			<div class="icon">
 				{#if item.image}
 					<img src={item.image.src} alt={item.image.alt} />
@@ -89,6 +106,11 @@
 		min-height: 0;
 	}
 
+	.card.wide {
+		align-items: center;
+		padding: 24px 40px;
+	}
+
 	.icon {
 		flex: none;
 		width: 97px;
@@ -119,12 +141,24 @@
 
 	.item-title {
 		font-family: var(--kz-font-heading);
-		font-size: 28px;
+		font-size: var(--title-size);
 		color: var(--color);
 	}
 
+	.wide .text {
+		flex: 1;
+		flex-direction: row;
+		align-items: center;
+		gap: 40px;
+	}
+
+	.wide .item-title {
+		flex: none;
+		width: 28%;
+	}
+
 	.text :global(.item-body) {
-		font-size: 22px;
+		font-size: var(--body-size);
 		line-height: 1.5;
 	}
 </style>
