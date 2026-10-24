@@ -8,8 +8,8 @@
   title と accent は HTML で受け取る（Slide の titleHtml と titleAccentHtml）。素の文字列を渡すときは HTML の特殊文字をエスケープする。
 -->
 <script module lang="ts">
-	/** タイトルの行の高さ（文字の大きさに対する比）。大きさを計算するレイアウトも使う */
-	export const TITLE_LINE_HEIGHT = 1.15;
+	/** タイトルの行の高さ（文字の大きさに対する比）。和文の 2 行の見出しが詰まらない値にする。大きさを計算するレイアウトも使う */
+	export const TITLE_LINE_HEIGHT = 1.4;
 </script>
 
 <script lang="ts">
