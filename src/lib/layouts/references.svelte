@@ -62,5 +62,7 @@
 		font-size: var(--url-size);
 		color: var(--kz-accent1);
 		text-decoration: underline;
+		text-decoration-skip-ink: none;
+		text-underline-offset: 0.3em;
 	}
 </style>

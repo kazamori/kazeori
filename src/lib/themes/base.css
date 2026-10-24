@@ -103,10 +103,12 @@
 	font-size: 1em;
 }
 
+/* リンクの下線は、y や g の下に伸びる部分でも途切れさせず、その部分より下に引く（大きな文字では途切れや接触が目立つ） */
 .kz-prose a {
 	color: var(--kz-accent1);
 	text-decoration: underline;
-	text-underline-offset: 0.15em;
+	text-decoration-skip-ink: none;
+	text-underline-offset: 0.3em;
 }
 
 .kz-prose strong {
@@ -229,7 +231,8 @@
 .kz-subtitle a {
 	color: inherit;
 	text-decoration: underline;
-	text-underline-offset: 0.15em;
+	text-decoration-skip-ink: none;
+	text-underline-offset: 0.3em;
 }
 
 /* 本文中の画像のキャプション（markdown の画像のタイトル） */
