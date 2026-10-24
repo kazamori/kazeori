@@ -25,7 +25,7 @@
 		"bun": ">=1.4.0"
 	},
 	"bin": {
-		"kazeori": "./cli/main.ts"
+		"kazeori": "cli/main.ts"
 	},
 	"files": [
 		"cli",
