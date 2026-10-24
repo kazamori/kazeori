@@ -2,6 +2,7 @@
 // 1 枚ずつの組み立ては slide.ts、画像の解決は images.ts、共通スライドの展開は sources.ts が受け持つ。
 import fs from 'node:fs';
 import path from 'node:path';
+import { escapeHtml } from '../format.ts';
 import type { ColorName, Deck, Diagnostic, ResolvedBrand, Slide } from '../types.ts';
 import { colors } from '../types.ts';
 import { DECK_FILE, isColor, mergeBrand, parseBrand, type Workspace } from '../workspace/config.ts';
@@ -14,6 +15,7 @@ import {
 	type DeckContext
 } from './context.ts';
 import { builtinLayouts, checkKeys, layoutAliases, themeConfigKeys } from './keys.ts';
+import { parseInline } from './markdown.ts';
 import { buildSlide } from './slide.ts';
 import { expandSources, readText } from './sources.ts';
 import { splitSlides, type RawSlide } from './split.ts';
@@ -150,12 +152,21 @@ export async function parseDeck(
 	const headmatter = top[0]?.frontmatter ?? {};
 
 	const color = resolveColor(headmatter, file, ctx);
-	const title = normalizeTitle(asString(headmatter.title)) ?? id.split('/').at(-1) ?? id;
+	const fallbackTitle = id.split('/').at(-1) ?? id;
+	const titleSource = normalizeTitle(asString(headmatter.title)) ?? fallbackTitle;
+	const title = parseInline(titleSource) ?? {
+		text: fallbackTitle,
+		html: escapeHtml(fallbackTitle)
+	};
 	const author = asString(headmatter.author) ?? workspace.defaults.author;
-	const event = asString(headmatter.event);
+	const eventSource = asString(headmatter.event);
+	const event = parseInline(eventSource);
 	const date = asString(headmatter.date);
 
-	const raws = expandSources(top, ctx, { title, author, event, date }, [file]);
+	// 共通スライドの本文は markdown として解析するので、書式を残した元の文字列で置き換える
+	const raws = expandSources(top, ctx, { title: titleSource, author, event: eventSource, date }, [
+		file
+	]);
 	for (const raw of raws) files.add(raw.file);
 
 	const slides: Slide[] = [];
@@ -168,10 +179,12 @@ export async function parseDeck(
 	return {
 		deck: {
 			id,
-			title,
+			title: title.text,
+			titleHtml: title.html,
 			color,
 			author,
-			event,
+			event: event?.text ?? null,
+			eventHtml: event?.html ?? null,
 			date,
 			slideCount: slides.length,
 			brand: resolveBrand(headmatter, color, date, file, ctx),

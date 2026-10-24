@@ -54,9 +54,14 @@ export interface Slide {
 	layout: string;
 	className: string;
 	frontmatter: Record<string, unknown>;
+	/** タイトルの素の文字列（markdown の書式と HTML のタグを除く）。改行は \n */
 	title: string | null;
 	titleAccent: string | null;
 	subtitle: string | null;
+	/** タイトルを描く HTML（インラインの markdown を変換したもの）。改行は \n のまま残す */
+	titleHtml: string | null;
+	titleAccentHtml: string | null;
+	subtitleHtml: string | null;
 	/** 最初の箇条書きより前の本文 */
 	introHtml: string;
 	/** 最初の箇条書きの各項目 */
@@ -75,10 +80,16 @@ export interface Slide {
 
 export interface DeckMeta {
 	id: string;
+	/** 題名の素の文字列（markdown の書式と HTML のタグを除く） */
 	title: string;
+	/** 題名を描く HTML */
+	titleHtml: string;
 	color: ColorName;
 	author: string | null;
+	/** イベント名の素の文字列 */
 	event: string | null;
+	/** イベント名を描く HTML */
+	eventHtml: string | null;
 	date: string | null;
 	slideCount: number;
 }

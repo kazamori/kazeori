@@ -57,7 +57,7 @@ bun run kazeori pdf --deck sample   # サンプルデッキの PDF を examples/
 
 - Svelte 5 の runes を使う（`$state`、`$derived`、`$props`）。`$effect` より `$derived` を優先し、DOM の操作は `{@attach}` で行う。
 - `class` は配列とオブジェクトの形で書き、`class:` ディレクティブは使わない。
-- `.svelte` を書いたり直したりしたら、`bunx @sveltejs/mcp svelte-autofixer <file> --svelte-version 5` で検証する。markdown を描く `Html.svelte` の `{@html}` への警告は意図したものなので残す。
+- `.svelte` を書いたり直したりしたら、`bunx @sveltejs/mcp svelte-autofixer <file> --svelte-version 5` で検証する。markdown を描く `Html.svelte` と、タイトルやサブタイトルの HTML（`titleHtml` など）を描く `{@html}` への警告は意図したものなので残す。
 - SvelteKit 3 では `$lib` が廃止されているので、`#lib/...`（`package.json` の `imports`）を使う。設定は `vite.config.ts` の `sveltekit({...})` で渡す。
 
 ## レイアウトの追加と変更

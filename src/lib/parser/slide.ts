@@ -6,15 +6,17 @@
 // 3. 最初の ## 見出し → subtitle
 // 4. 最初の箇条書き → items（その前後の本文は introHtml、restHtml）
 // 割り当てなかった要素は bodyHtml に残し、内容が消えないようにする。
-import type { List, ListItem, Parent, RootContent } from 'mdast';
+import type { Heading, List, ListItem, Parent, RootContent } from 'mdast';
 import { toString } from 'mdast-util-to-string';
 import type { ArchifyFigureData, Slide, SlideImage, SlideItem } from '../types.ts';
-import { asString, normalizeTitle, report, type DeckContext } from './context.ts';
+import { asString, report, type DeckContext } from './context.ts';
 import { createImageResolver, type ImageResolver } from './images.ts';
 import { checkLayoutVisuals } from './keys.ts';
 import {
 	createHtmlRenderer,
+	headingToInline,
 	isImageOnlyParagraph,
+	parseInline,
 	parseMarkdown,
 	type HtmlRenderer
 } from './markdown.ts';
@@ -152,16 +154,21 @@ export async function buildSlide(
 	const fmImages = [fm.image, ...(Array.isArray(fm.images) ? fm.images : [fm.images])];
 	for (const url of fmImages) if (typeof url === 'string') collect(url, '', raw.line);
 
+	const title = parseInline(
+		typeof fm.title === 'string' || typeof fm.title === 'number' ? String(fm.title) : null
+	);
+	const titleAccent = parseInline(asString(fm.titleAccent));
 	const slide: Slide = {
 		number,
 		layout,
 		className: typeof fm.class === 'string' ? fm.class : '',
 		frontmatter: fm,
-		title: normalizeTitle(
-			typeof fm.title === 'string' || typeof fm.title === 'number' ? String(fm.title) : null
-		),
-		titleAccent: normalizeTitle(asString(fm.titleAccent)),
+		title: title?.text ?? null,
+		titleAccent: titleAccent?.text ?? null,
 		subtitle: null,
+		titleHtml: title?.html ?? null,
+		titleAccentHtml: titleAccent?.html ?? null,
+		subtitleHtml: null,
 		introHtml: '',
 		items: [],
 		restHtml: '',
@@ -195,10 +202,18 @@ export async function buildSlide(
 
 		if (slide.title === null) {
 			const i = body.findIndex(isHeading(1));
-			if (i >= 0) slide.title = normalizeTitle(toString(body.splice(i, 1)[0]));
+			if (i >= 0) {
+				const heading = headingToInline(body.splice(i, 1)[0] as Heading);
+				slide.title = heading?.text ?? null;
+				slide.titleHtml = heading?.html ?? null;
+			}
 		}
 		const sub = body.findIndex(isHeading(2));
-		if (sub >= 0) slide.subtitle = normalizeTitle(toString(body.splice(sub, 1)[0]));
+		if (sub >= 0) {
+			const heading = headingToInline(body.splice(sub, 1)[0] as Heading);
+			slide.subtitle = heading?.text ?? null;
+			slide.subtitleHtml = heading?.html ?? null;
+		}
 
 		const listIndex = body.findIndex((node) => node.type === 'list');
 		if (listIndex >= 0) {

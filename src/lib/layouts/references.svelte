@@ -10,7 +10,9 @@
 	let { slide }: LayoutProps = $props();
 </script>
 
-<SlideHeader slide={{ ...slide, title: slide.title ?? '参考文献' }} />
+<SlideHeader
+	slide={{ ...slide, title: slide.title ?? '参考文献', titleHtml: slide.titleHtml ?? '参考文献' }}
+/>
 <div class="body kz-fit">
 	<Html html={slide.bodyHtml} class="refs" />
 </div>

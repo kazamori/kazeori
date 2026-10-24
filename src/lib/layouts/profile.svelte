@@ -14,8 +14,8 @@
 </script>
 
 <div class="card kz-fit">
-	{#if slide.title}<p class="name kz-lines">{slide.title}</p>{/if}
-	{#if slide.subtitle}<p class="role kz-lines">{slide.subtitle}</p>{/if}
+	{#if slide.titleHtml}<p class="name kz-lines">{@html slide.titleHtml}</p>{/if}
+	{#if slide.subtitleHtml}<p class="role kz-lines">{@html slide.subtitleHtml}</p>{/if}
 	<Html html={slide.introHtml} class="bio" />
 </div>
 <div class="photo"><Picture image={slide.images[0]} fill="var(--kz-accent3)" /></div>

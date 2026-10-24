@@ -22,7 +22,7 @@
 	const THANKS_HEIGHT = 400;
 	const MAX_SIZE = 160;
 
-	let thanks = $derived(slide.title ?? 'ありがとうございました');
+	let thanks = $derived(slide.titleHtml ?? 'ありがとうございました');
 	// 行数分が収まる大きさを上限にする。行の幅に合わせた縮小は SlideTitle が行う
 	let size = $derived(
 		Math.min(MAX_SIZE, Math.floor(THANKS_HEIGHT / (thanks.split('\n').length * TITLE_LINE_HEIGHT)))
@@ -40,7 +40,7 @@
 
 	<div class="message kz-fit" style:height="{MESSAGE_HEIGHT}px">
 		<SlideTitle title={thanks} {size} inline light />
-		{#if slide.titleAccent}<p class="accent">{slide.titleAccent}</p>{/if}
+		{#if slide.titleAccentHtml}<p class="accent kz-lines">{@html slide.titleAccentHtml}</p>{/if}
 		<Html html={slide.bodyHtml} class="end-body" />
 	</div>
 

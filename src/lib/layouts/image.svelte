@@ -13,10 +13,10 @@
 </script>
 
 <div class="image"><Picture image={slide.images[0]} overlayCaption /></div>
-{#if slide.title || slide.subtitle}
+{#if slide.titleHtml || slide.subtitleHtml}
 	<div class="caption kz-fit">
-		{#if slide.title}<p class="title kz-lines">{slide.title}</p>{/if}
-		{#if slide.subtitle}<p class="subtitle kz-lines">{slide.subtitle}</p>{/if}
+		{#if slide.titleHtml}<p class="title kz-lines">{@html slide.titleHtml}</p>{/if}
+		{#if slide.subtitleHtml}<p class="subtitle kz-lines">{@html slide.subtitleHtml}</p>{/if}
 	</div>
 {/if}
 

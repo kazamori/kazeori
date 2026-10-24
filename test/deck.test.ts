@@ -134,7 +134,7 @@ describe('parseDeck', () => {
 		}
 	});
 
-	test('タイトルの <br> と YAML の改行を改行にし、ほかの HTML は文字のまま残す（#10）', async () => {
+	test('タイトルの <br> と YAML の改行を改行にし、素の文字列からは HTML のタグを除く（#10）', async () => {
 		const dir = path.join(wsRoot, 'decks/2026/2026-01-03-title');
 		fs.mkdirSync(dir, { recursive: true });
 		fs.writeFileSync(
@@ -161,8 +161,61 @@ describe('parseDeck', () => {
 			});
 			expect(deck.title).toBe('人に見せる図、\n自分が分かるための図');
 			expect(deck.slides[0].titleAccent).toBe('2 行目\n3 行目');
-			expect(deck.slides[1].title).toBe('見出しの\n改行と <b>太字</b>');
+			expect(deck.slides[1].title).toBe('見出しの\n改行と 太字');
+			expect(deck.slides[1].titleHtml).toBe('見出しの\n改行と <b>太字</b>');
 			expect(deck.slides[1].subtitle).toBe('サブ\nタイトル');
+		} finally {
+			fs.rmSync(dir, { recursive: true, force: true });
+		}
+	});
+
+	test('title、titleAccent、event、見出しのインラインの markdown を HTML にする', async () => {
+		const dir = path.join(wsRoot, 'decks/2026/2026-01-04-inline');
+		fs.mkdirSync(dir, { recursive: true });
+		fs.writeFileSync(
+			path.join(dir, 'slides.md'),
+			[
+				'---',
+				'title: "[archify](https://example.com/archify)<br>の紹介"',
+				'event: はんなり LT **#1**',
+				'---',
+				'',
+				'---',
+				'title: 1. `code` と <a href="https://example.com">HTML</a>',
+				'titleAccent: "*強調* & <小なり>"',
+				'---',
+				'',
+				'## サブ **タイトル** <br> [リンク](https://example.com/sub)',
+				'',
+				'[本文のリンク](https://example.com/body) と [ページ内](#3)',
+				''
+			].join('\n')
+		);
+		try {
+			const { deck } = await parseDeck(loadWorkspace(wsRoot), '2026/2026-01-04-inline', {
+				resolveAsset
+			});
+			expect(deck).toMatchObject({
+				title: 'archify\nの紹介',
+				titleHtml:
+					'<a href="https://example.com/archify" target="_blank" rel="noopener noreferrer">archify</a>\nの紹介',
+				event: 'はんなり LT #1',
+				eventHtml: 'はんなり LT <strong>#1</strong>'
+			});
+			// 「1. 」で始まっても箇条書きにせず、行頭の HTML も段落の中の HTML として読む
+			expect(deck.slides[1]).toMatchObject({
+				title: '1. code と HTML',
+				titleHtml: '1. <code>code</code> と <a href="https://example.com">HTML</a>',
+				titleAccent: '強調 & <小なり>',
+				titleAccentHtml: '<em>強調</em> &#x26; &#x3C;小なり>',
+				subtitle: 'サブ タイトル\nリンク',
+				subtitleHtml:
+					'サブ <strong>タイトル</strong> \n <a href="https://example.com/sub" target="_blank" rel="noopener noreferrer">リンク</a>'
+			});
+			// 外部の URL だけを別のタブで開き、ページ内のリンクと HTML の直書きはそのままにする
+			expect(deck.slides[1].bodyHtml).toBe(
+				'<p><a href="https://example.com/body" target="_blank" rel="noopener noreferrer">本文のリンク</a> と <a href="#3">ページ内</a></p>'
+			);
 		} finally {
 			fs.rmSync(dir, { recursive: true, force: true });
 		}

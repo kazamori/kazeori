@@ -7,7 +7,6 @@
 	import Figure from '../components/Figure.svelte';
 	import Html from '../components/Html.svelte';
 	import SlideHeader from '../components/SlideHeader.svelte';
-	import { escapeHtml } from '../format';
 	import type { LayoutProps } from '../types';
 	import { slideVisuals } from '../visuals';
 
@@ -17,7 +16,7 @@
 	let hasLeftSlot = $derived(slide.slots.left !== undefined);
 	let left = $derived(
 		slide.slots.left ??
-			(slide.subtitle ? `<h2>${escapeHtml(slide.subtitle)}</h2>` : '') + slide.bodyHtml
+			(slide.subtitleHtml ? `<h2>${slide.subtitleHtml}</h2>` : '') + slide.bodyHtml
 	);
 	// Figure に渡す、図と画像の並び（slideVisuals）の位置
 	let indexes = $derived(slideVisuals(slide).map((_, i) => i));

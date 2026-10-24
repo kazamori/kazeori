@@ -3,6 +3,7 @@
   inline のときは 2 つを 1 行に並べ、そうでなければ 2 行に分ける。
   文字が長くて行数が増えるときは、maxLines に収まるまで文字を小さくする（minSize まで）。
   タイトルの改行（\n。markdown の <br> や YAML の改行から作る）は、そのまま改行として描き、その行数に収める。
+  title と accent は HTML で受け取る（Slide の titleHtml と titleAccentHtml）。素の文字列を渡すときは HTML の特殊文字をエスケープする。
 -->
 <script module lang="ts">
 	/** タイトルの行の高さ（文字の大きさに対する比）。大きさを計算するレイアウトも使う */
@@ -59,14 +60,14 @@
 
 {#if title || accent}
 	<h1
-		class={['title', { light, inline }]}
+		class={['title', 'kz-lines', { light, inline }]}
 		style:font-size="{size}px"
 		style:text-align={align}
 		style:line-height={TITLE_LINE_HEIGHT}
 		{@attach fit}
 	>
-		{#if title}<span class="main">{title}</span>{/if}
-		{#if accent}<span class="accent">{accent}</span>{/if}
+		{#if title}<span class="main">{@html title}</span>{/if}
+		{#if accent}<span class="accent">{@html accent}</span>{/if}
 	</h1>
 {/if}
 

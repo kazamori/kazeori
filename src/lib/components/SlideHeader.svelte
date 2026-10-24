@@ -25,8 +25,8 @@
 </script>
 
 <header class="head" style:text-align={align}>
-	<SlideTitle title={slide.title} accent={slide.titleAccent} inline {align} {size} />
-	{#if subtitle && slide.subtitle}<p class="kz-subtitle">{slide.subtitle}</p>{/if}
+	<SlideTitle title={slide.titleHtml} accent={slide.titleAccentHtml} inline {align} {size} />
+	{#if subtitle && slide.subtitleHtml}<p class="kz-subtitle">{@html slide.subtitleHtml}</p>{/if}
 	<Html html={intro} class="intro" />
 </header>
 

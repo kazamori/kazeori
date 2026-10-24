@@ -3,7 +3,7 @@
   画像があれば右下に置き（slide1）、なければ正方形の組み合わせで右側を埋める（slide2）。
 -->
 <script lang="ts">
-	import { formatDate } from '../format';
+	import { escapeHtml, formatDate } from '../format';
 	import type { LayoutProps } from '../types';
 	import Html from './Html.svelte';
 	import Logo from './Logo.svelte';
@@ -14,11 +14,15 @@
 	let { slide, deck, brand, light = false }: LayoutProps & { light?: boolean } = $props();
 
 	let image = $derived(slide.images[0] ?? null);
-	let title = $derived(slide.title ?? deck.title);
-	let subtitle = $derived(slide.subtitle ?? deck.event);
-	// サブタイトルにイベント名を使っていなければ、日付と発表者の行に添える
+	let title = $derived(slide.titleHtml ?? deck.titleHtml);
+	let subtitle = $derived(slide.subtitleHtml ?? deck.eventHtml);
+	// サブタイトルにイベント名を使っていなければ、日付と発表者の行に添える。イベント名は HTML なので、ほかの値はエスケープする
 	let meta = $derived(
-		[formatDate(deck.date), slide.subtitle ? deck.event : null, deck.author]
+		[
+			deck.date && escapeHtml(formatDate(deck.date) ?? ''),
+			slide.subtitleHtml ? deck.eventHtml : null,
+			deck.author && escapeHtml(deck.author)
+		]
 			.filter(Boolean)
 			.join('　')
 	);
@@ -49,11 +53,11 @@
 
 	<div class="text kz-fit">
 		<SlideTitle {title} accent={slide.titleAccent} size={96} light={!light} />
-		{#if subtitle}<p class="subtitle kz-lines">{subtitle}</p>{/if}
+		{#if subtitle}<p class="subtitle kz-lines">{@html subtitle}</p>{/if}
 		<Html html={slide.bodyHtml} class="cover-body" />
 	</div>
 
-	{#if meta}<p class="meta">{meta}</p>{/if}
+	{#if meta}<p class="meta kz-lines">{@html meta}</p>{/if}
 </div>
 
 <style>

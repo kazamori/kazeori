@@ -209,6 +209,14 @@
 	white-space: pre-line;
 }
 
+/* タイトルやサブタイトルの中のリンク。背景の色が場所ごとに違うので、文字の色を引き継いで下線で示す */
+.kz-lines a,
+.kz-subtitle a {
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
 /* 本文中の画像のキャプション（markdown の画像のタイトル） */
 .kz-prose .kz-figure {
 	display: block;
