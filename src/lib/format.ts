@@ -40,6 +40,11 @@ export function accentAt(index: number): string {
 	return accentCycle[index % accentCycle.length];
 }
 
+/** 項目を順に塗る色。隣り合う項目が見分けられるよう、配色ごとに accent 色の順を変える（--kz-item1 から --kz-item6）。 */
+export function itemColorAt(index: number): string {
+	return `var(--kz-item${(index % accentCycle.length) + 1})`;
+}
+
 /** 01、02 のような 2 桁の番号。 */
 export function pad2(n: number): string {
 	return String(n).padStart(2, '0');

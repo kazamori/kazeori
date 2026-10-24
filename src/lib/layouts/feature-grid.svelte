@@ -7,7 +7,7 @@
 <script lang="ts">
 	import Html from '../components/Html.svelte';
 	import SlideHeader from '../components/SlideHeader.svelte';
-	import { accentAt, pad2 } from '../format';
+	import { itemColorAt, pad2 } from '../format';
 	import type { LayoutProps } from '../types';
 
 	let { slide }: LayoutProps = $props();
@@ -48,7 +48,7 @@
 	style:--row-height="{rowHeight}px"
 >
 	{#each slide.items as item, i (i)}
-		<li class="card" style:--color={accentAt(i)}>
+		<li class="card" style:--color={itemColorAt(i)}>
 			<div class="icon">
 				{#if item.image}
 					<img src={item.image.src} alt={item.image.alt} />

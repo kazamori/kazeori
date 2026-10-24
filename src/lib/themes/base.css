@@ -6,6 +6,14 @@
 .kz-theme {
 	--kz-accent5: #ff9a1f;
 	--kz-accent6: #ff7401;
+
+	/* 項目を順に塗る色（feature-grid のカードなど）。配色ごとに、隣り合う項目が見分けられる順にする */
+	--kz-item1: var(--kz-accent1);
+	--kz-item2: var(--kz-accent2);
+	--kz-item3: var(--kz-accent3);
+	--kz-item4: var(--kz-accent4);
+	--kz-item5: var(--kz-accent5);
+	--kz-item6: var(--kz-accent6);
 	--kz-dk2: #2d3847;
 	--kz-lt2: #e7e6e6;
 
@@ -32,6 +40,13 @@
 	--kz-accent2: #4372b9;
 	--kz-accent3: #4c96d1;
 	--kz-accent4: #44c8f5;
+
+	/* blue の accent1 と accent2 はほとんど同じ色に見えるので、accent2 を最後に回す */
+	--kz-item2: var(--kz-accent3);
+	--kz-item3: var(--kz-accent4);
+	--kz-item4: var(--kz-accent5);
+	--kz-item5: var(--kz-accent6);
+	--kz-item6: var(--kz-accent2);
 }
 
 .kz-theme[data-color='green'] {

@@ -2,7 +2,7 @@
 <script lang="ts">
 	import Html from '../components/Html.svelte';
 	import SlideHeader from '../components/SlideHeader.svelte';
-	import { accentAt, pad2 } from '../format';
+	import { itemColorAt, pad2 } from '../format';
 	import type { LayoutProps } from '../types';
 
 	let { slide }: LayoutProps = $props();
@@ -14,7 +14,7 @@
 
 <ol class="steps kz-fit" style:--count={count}>
 	{#each slide.items as step, i (i)}
-		<li class="step" style:--color={accentAt(i)}>
+		<li class="step" style:--color={itemColorAt(i)}>
 			<div class="chevron"><span>{pad2(i + 1)}</span></div>
 			{#if step.title}<strong class="step-title">{step.title}</strong>{/if}
 			<Html html={step.html} class="step-body" />

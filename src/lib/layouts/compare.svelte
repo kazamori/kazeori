@@ -8,7 +8,7 @@
 	import Figure from '../components/Figure.svelte';
 	import Html from '../components/Html.svelte';
 	import SlideHeader from '../components/SlideHeader.svelte';
-	import { accentAt } from '../format';
+	import { itemColorAt } from '../format';
 	import type { LayoutProps } from '../types';
 	import { slideVisuals } from '../visuals';
 
@@ -26,7 +26,7 @@
 {#each columns as column, i (i)}
 	<div
 		class={['col', i === 0 ? 'left' : 'right', { 'with-caption': hasCaption }]}
-		style:--color={accentAt(i)}
+		style:--color={itemColorAt(i)}
 	>
 		{#if column.item}
 			<div class="label kz-fit">

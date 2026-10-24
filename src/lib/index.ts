@@ -13,7 +13,15 @@ export { default as Square } from './components/Square.svelte';
 export { default as ProgressBar } from './components/ProgressBar.svelte';
 export { drawPattern, parsePattern, patternNames } from './patterns';
 export { slideVisuals, type Visual } from './visuals';
-export { accentAt, formatDate, pad2, parseProgress, splitBlockquote, stripTags } from './format';
+export {
+	accentAt,
+	formatDate,
+	itemColorAt,
+	pad2,
+	parseProgress,
+	splitBlockquote,
+	stripTags
+} from './format';
 export type {
 	ArchifyFigureData,
 	Deck,

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { formatDate, parseProgress, splitBlockquote } from '../src/lib/format.ts';
+import { formatDate, itemColorAt, parseProgress, splitBlockquote } from '../src/lib/format.ts';
 import { parseHighlightLines } from '../src/lib/parser/highlight.ts';
 import { drawPattern, parsePattern, squareTiles, type PatternSpec } from '../src/lib/patterns.ts';
 
@@ -11,6 +11,16 @@ describe('formatDate', () => {
 		[null, null]
 	])('%p は %p になる', (input, expected) => {
 		expect(formatDate(input)).toBe(expected);
+	});
+});
+
+describe('itemColorAt', () => {
+	test.each([
+		[0, 'var(--kz-item1)'],
+		[5, 'var(--kz-item6)'],
+		[6, 'var(--kz-item1)']
+	])('%p 番目の項目は %p で塗り、6 色で 1 周する', (index, expected) => {
+		expect(itemColorAt(index)).toBe(expected);
 	});
 });
 

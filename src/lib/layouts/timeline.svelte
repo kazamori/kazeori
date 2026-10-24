@@ -5,7 +5,7 @@
 <script lang="ts">
 	import Html from '../components/Html.svelte';
 	import SlideHeader from '../components/SlideHeader.svelte';
-	import { accentAt } from '../format';
+	import { itemColorAt } from '../format';
 	import type { LayoutProps } from '../types';
 
 	let { slide }: LayoutProps = $props();
@@ -17,7 +17,7 @@
 
 <ol class="events" style:--count={count}>
 	{#each slide.items as event, i (i)}
-		<li class={['event', i % 2 === 0 ? 'above' : 'below']} style:--color={accentAt(i)}>
+		<li class={['event', i % 2 === 0 ? 'above' : 'below']} style:--color={itemColorAt(i)}>
 			<div class="text kz-fit"><Html html={event.html} class="event-body" /></div>
 			<div class="arrow"><span>{event.title ?? ''}</span></div>
 		</li>
