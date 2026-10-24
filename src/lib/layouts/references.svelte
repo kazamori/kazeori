@@ -19,9 +19,7 @@
 	let size = $derived(SIZES[slide.items.length <= 4 ? 0 : slide.items.length === 5 ? 1 : 2]);
 </script>
 
-<SlideHeader
-	slide={{ ...slide, title: slide.title ?? '参考文献', titleHtml: slide.titleHtml ?? '参考文献' }}
-/>
+<SlideHeader slide={{ ...slide, titleHtml: slide.titleHtml ?? '参考文献' }} />
 <div
 	class="body kz-fit"
 	style:--title-size="{size.title}px"

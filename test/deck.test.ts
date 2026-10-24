@@ -169,6 +169,23 @@ describe('parseDeck', () => {
 		}
 	});
 
+	test('title がなければディレクトリ名を題名にし、markdown として解析しない', async () => {
+		const dir = path.join(wsRoot, 'decks/2026/2026-01-04-*no*-title');
+		fs.mkdirSync(dir, { recursive: true });
+		fs.writeFileSync(path.join(dir, 'slides.md'), '---\nauthor: 発表者\n---\n\n# 本文\n');
+		try {
+			const { deck } = await parseDeck(loadWorkspace(wsRoot), '2026/2026-01-04-*no*-title', {
+				resolveAsset
+			});
+			expect(deck).toMatchObject({
+				title: '2026-01-04-*no*-title',
+				titleHtml: '2026-01-04-*no*-title'
+			});
+		} finally {
+			fs.rmSync(dir, { recursive: true, force: true });
+		}
+	});
+
 	test('title、titleAccent、event、見出しのインラインの markdown を HTML にする', async () => {
 		const dir = path.join(wsRoot, 'decks/2026/2026-01-04-inline');
 		fs.mkdirSync(dir, { recursive: true });

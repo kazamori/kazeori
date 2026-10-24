@@ -31,20 +31,35 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+/** タイトルの改行として扱う `<br>`（`<br/>`、`<br />` も）。 */
+const brTag = String.raw`<br\s*\/?>`;
+const brTagPattern = new RegExp(`^${brTag}$`, 'i');
+const brTagWithSpaces = new RegExp(`[ \\t]*${brTag}[ \\t]*`, 'gi');
+
+/** HTML の断片が、改行として扱う `<br>` か。 */
+export function isBrTag(html: string): boolean {
+	return brTagPattern.test(html.trim());
+}
+
 /**
- * タイトルの文字列を整える。`<br>`（`<br/>`、`<br />` も）と YAML の改行を改行（\n）にそろえ、前後の空白を除く。
- * タイトルは文字列として描くので、改行以外の HTML はそのままエスケープされる。
+ * タイトルの文字列を整える。`<br>` と YAML の改行を改行（\n）にそろえ、前後の空白を除く。
+ * 改行以外の書式は残し、インラインの markdown として解析する側（markdown.ts の parseInline）に任せる。
  */
 export function normalizeTitle(value: string | null): string | null {
 	if (value === null) return null;
 	const text = value
 		.replace(/\r\n?/g, '\n')
-		.replace(/[ \t]*<br\s*\/?>[ \t]*/gi, '\n')
+		.replace(brTagWithSpaces, '\n')
 		.split('\n')
 		.map((line) => line.trim())
 		.join('\n')
 		.trim();
 	return text === '' ? null : text;
+}
+
+/** フロントマターの値が 1 以上の整数ならその値を、そうでなければ null を返す。 */
+export function asPositiveInteger(value: unknown): number | null {
+	return typeof value === 'number' && Number.isInteger(value) && value >= 1 ? value : null;
 }
 
 /** フロントマターの値を文字列にする。YAML の日付は YYYY-MM-DD にする。 */

@@ -1,6 +1,6 @@
 // レイアウトの名前と、フロントマターの項目の一覧。
 import type { RawSlide } from './split.ts';
-import { report, type DeckContext } from './context.ts';
+import { asPositiveInteger, report, type DeckContext } from './context.ts';
 
 /**
  * 組み込みレイアウトが描く画像（画像だけの段落とフロントマターの image）の扱い。
@@ -180,7 +180,7 @@ const slidevKeys = new Set([
 /** フロントマターの項目を検査する。Slidev の項目は情報として、どちらにもない項目は警告として報告する。 */
 export function checkKeys(raw: RawSlide, isHeadmatter: boolean, ctx: DeckContext) {
 	for (const [key, value] of Object.entries(raw.frontmatter)) {
-		if (positiveIntegerKeys.has(key) && !(Number.isInteger(value) && (value as number) >= 1)) {
+		if (positiveIntegerKeys.has(key) && asPositiveInteger(value) === null) {
 			report(ctx, 'warning', raw.file, raw.line, `${key} は 1 以上の整数で指定してください`);
 		}
 		if (slideKeys.has(key) || (isHeadmatter && headmatterKeys.has(key))) continue;

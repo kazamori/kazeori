@@ -7,7 +7,7 @@ import { toString } from 'mdast-util-to-string';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
 import { unified } from 'unified';
-import { normalizeTitle } from './context.ts';
+import { isBrTag, normalizeTitle } from './context.ts';
 import { highlightToHast, prepareHighlighter } from './highlight.ts';
 
 const processor = unified().use(remarkParse).use(remarkGfm);
@@ -124,13 +124,10 @@ export interface InlineText {
 	html: string;
 }
 
-const brPattern = /^<br\s*\/?>$/i;
-
 /** 句の並びの `<br>` を改行の文字に置き換えた複製を返す。 */
 function replaceBreaks(nodes: PhrasingContent[]): PhrasingContent[] {
 	return nodes.map((node): PhrasingContent => {
-		if (node.type === 'html' && brPattern.test(node.value.trim()))
-			return { type: 'text', value: '\n' };
+		if (node.type === 'html' && isBrTag(node.value)) return { type: 'text', value: '\n' };
 		if ('children' in node)
 			return { ...node, children: replaceBreaks(node.children) } as PhrasingContent;
 		return node;

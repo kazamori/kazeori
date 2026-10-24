@@ -152,8 +152,9 @@ export async function parseDeck(
 	const headmatter = top[0]?.frontmatter ?? {};
 
 	const color = resolveColor(headmatter, file, ctx);
+	// title がなければディレクトリ名を題名にする。ディレクトリ名は markdown として解析しない
 	const fallbackTitle = id.split('/').at(-1) ?? id;
-	const titleSource = normalizeTitle(asString(headmatter.title)) ?? fallbackTitle;
+	const titleSource = asString(headmatter.title);
 	const title = parseInline(titleSource) ?? {
 		text: fallbackTitle,
 		html: escapeHtml(fallbackTitle)
@@ -164,9 +165,12 @@ export async function parseDeck(
 	const date = asString(headmatter.date);
 
 	// 共通スライドの本文は markdown として解析するので、書式を残した元の文字列で置き換える
-	const raws = expandSources(top, ctx, { title: titleSource, author, event: eventSource, date }, [
-		file
-	]);
+	const raws = expandSources(
+		top,
+		ctx,
+		{ title: normalizeTitle(titleSource) ?? fallbackTitle, author, event: eventSource, date },
+		[file]
+	);
 	for (const raw of raws) files.add(raw.file);
 
 	const slides: Slide[] = [];

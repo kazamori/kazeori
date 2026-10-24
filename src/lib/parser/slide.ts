@@ -9,7 +9,7 @@
 import type { Heading, List, ListItem, Parent, RootContent } from 'mdast';
 import { toString } from 'mdast-util-to-string';
 import type { ArchifyFigureData, Slide, SlideImage, SlideItem } from '../types.ts';
-import { asString, report, type DeckContext } from './context.ts';
+import { asPositiveInteger, asString, report, type DeckContext } from './context.ts';
 import { createImageResolver, type ImageResolver } from './images.ts';
 import { checkLayoutVisuals } from './keys.ts';
 import {
@@ -169,10 +169,7 @@ export async function buildSlide(
 		titleHtml: title?.html ?? null,
 		titleAccentHtml: titleAccent?.html ?? null,
 		subtitleHtml: null,
-		titleLines:
-			Number.isInteger(fm.titleLines) && (fm.titleLines as number) >= 1
-				? (fm.titleLines as number)
-				: null,
+		titleLines: asPositiveInteger(fm.titleLines),
 		introHtml: '',
 		items: [],
 		restHtml: '',
