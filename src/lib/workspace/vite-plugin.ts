@@ -49,7 +49,7 @@ function layoutsModule(files: Record<string, string>): string {
 /**
  * kazeori のソース（src/ と package.json）の内容のハッシュ。
  *
- * workspace の node_modules/kazeori から動くとき、Vite は kazeori のソースを依存パッケージとみなし、
+ * workspace の node_modules/@kazamori/kazeori から動くとき、Vite は kazeori のソースを依存パッケージとみなし、
  * URL に ?v=<browserHash> を付けて長期キャッシュ（immutable）で返す。
  * browserHash は kazeori の bun.lock と Vite の設定から作られるので、kazeori のコードだけが変わる更新では変わらず、
  * ブラウザが更新前のファイルを使い続ける（#11）。
@@ -114,7 +114,9 @@ export function kazeoriWorkspace(options: LoadOptions): Plugin {
 			return {
 				resolve: {
 					dedupe: ['svelte'],
+					// 独自レイアウトは、パッケージ名（@kazamori/kazeori）でも短い名前（kazeori）でも import できる
 					alias: {
+						'@kazamori/kazeori': path.join(kazeoriRoot, 'src/lib/index.ts'),
 						kazeori: path.join(kazeoriRoot, 'src/lib/index.ts'),
 						// どの import にも当たらない別名。kazeori のソースのハッシュを browserHash に含めるためのもの（#11）
 						[`kazeori-source-${kazeoriSourceHash()}`]: kazeoriRoot

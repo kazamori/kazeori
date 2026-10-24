@@ -1,6 +1,6 @@
 # kazeori
 
-<img src="docs/logo/kazeori.png" alt="kazeori のロゴ" width="160">
+<img src="https://raw.githubusercontent.com/kazamori/kazeori/main/docs/logo/kazeori.png" alt="kazeori のロゴ" width="160">
 
 kazeori（風織り）は、カザモリスタイルのスライドを markdown から生成するツールです。
 カザモリスタイルは、カザモリ合同会社のスライドテンプレートから書き起こした配色、レイアウト、装飾のことです。
@@ -16,29 +16,27 @@ kazeori（風織り）は、カザモリスタイルのスライドを markdown 
 
 ## 最小構成で始める
 
-空の `kazeori.yaml` を置いたディレクトリがあれば、スライドを作れます。
-次の例では、kazeori のリポジトリを `~/kazeori` に clone したものとします。
+kazeori は npm に `@kazamori/kazeori` の名前で公開しています。
+空の `kazeori.yaml` を置いたディレクトリに kazeori を入れれば、スライドを作れます。
 
 ```sh
-git clone git@github.com:kazamori/kazeori.git ~/kazeori
-cd ~/kazeori && bun install
-
-mkdir ~/my-slides && cd ~/my-slides
+mkdir my-slides && cd my-slides
+bun add -d @kazamori/kazeori
 touch kazeori.yaml
-bun ~/kazeori/cli/main.ts new hello --template talk --title "はじめてのスライド"
-bun ~/kazeori/cli/main.ts dev
+bunx kazeori new hello --template talk --title "はじめてのスライド"
+bunx kazeori dev
 ```
 
 `new` は `decks/<年>/<日付>-hello/slides.md` を作ります。
 `dev` で開いたページでデッキを選ぶと、編集しながらプレビューできます。
-PDF は `bun ~/kazeori/cli/main.ts pdf --deck hello` で `dist/` に出力します。
+PDF は `bunx kazeori pdf --deck hello` で `dist/` に出力します。
 
 この構成では、ロゴ、社名、フッターのないスライドになります。
 ロゴや社名を入れるときは、`kazeori.yaml` に `brand:` を書きます（後述の「kazeori.yaml」）。
 雛形、共通スライド、独自レイアウトも、必要になったときに同じディレクトリへ足していけます。
 
 `kazeori.yaml` がどこにもないディレクトリで実行すると、kazeori に同梱のサンプル（`examples/`）を workspace として使います。
-試すには便利ですが、`new` で作ったデッキが kazeori のリポジトリの中にできるので、普段の利用には向きません。
+試すには便利ですが、`new` で作ったデッキが kazeori のパッケージ（またはリポジトリ）の中にできるので、普段の利用には向きません。
 
 ## workspace
 
@@ -65,19 +63,19 @@ my-decks/
 kazeori はカレントディレクトリから親へ `kazeori.yaml` を探します。
 見つからないときは、このリポジトリの `examples/`（ロゴのないサンプル workspace）を使います。
 
-workspace の `package.json` には、kazeori を git の依存として追加します。
+workspace の `package.json` には、kazeori を開発用の依存として追加します（`bun add -d @kazamori/kazeori`）。
 
 ```json
 {
 	"private": true,
 	"devDependencies": {
-		"kazeori": "git+ssh://git@github.com/kazamori/kazeori.git#<タグ>"
+		"@kazamori/kazeori": "0.3.0"
 	}
 }
 ```
 
 `bun install` のあとは `bunx kazeori <コマンド>` で使えます。
-kazeori 自体を修正しながら試すときは、kazeori のリポジトリで `bun link` を実行し、workspace 側で `bun link kazeori` を実行します。
+kazeori 自体を修正しながら試すときは、kazeori のリポジトリで `bun link` を実行し、workspace 側で `bun link @kazamori/kazeori` を実行します。
 
 ### kazeori.yaml
 
@@ -398,7 +396,7 @@ workspace の `layouts/<名前>.svelte` に Svelte コンポーネントを置�
 
 ```svelte
 <script lang="ts">
-	import { Html, SlideHeader, type LayoutProps } from 'kazeori';
+	import { Html, SlideHeader, type LayoutProps } from '@kazamori/kazeori';
 
 	let { slide }: LayoutProps = $props();
 </script>
@@ -432,7 +430,7 @@ workspace の `layouts/<名前>.svelte` に Svelte コンポーネントを置�
 ```
 
 レイアウトの props は `slide`（タイトル、項目、本文の HTML、画像、フロントマターなど）、`deck`、`brand` です。
-`kazeori` パッケージから、タイトル、本文、画像、ロゴ、装飾の正方形などの部品と型を使えます。
+`@kazamori/kazeori` パッケージから、タイトル、本文、画像、ロゴ、装飾の正方形などの部品と型を使えます（短い名前の `kazeori` でも import できます）。
 配色は CSS 変数（`--kz-accent1` から `--kz-accent6`、`--kz-text` など）で参照してください。
 `.kz-fit` クラスを付けた要素は、文字のはみ出しの検査の対象になります。
 
@@ -454,13 +452,13 @@ kazeori は HTML から図の SVG と CSS だけを取り出し、ライトテ�
 
 ## 構成
 
-![kazeori のシステム構成](docs/architecture/system-overview.png)
+![kazeori のシステム構成](https://raw.githubusercontent.com/kazamori/kazeori/main/docs/architecture/system-overview.png)
 
 kazeori の CLI は、workspace（`kazeori.yaml` を置いたディレクトリ）を対象に Vite（SvelteKit）を起動します。
 Vite プラグインがパーサでデッキを読み込み、仮想モジュールとして SvelteKit のアプリに渡します。
 PDF は、静的サイトを一時ディレクトリに書き出し、Chromium で印刷ビューを開いて出力します。
 
-![slides.md がスライドになるまで](docs/architecture/deck-pipeline.png)
+![slides.md がスライドになるまで](https://raw.githubusercontent.com/kazamori/kazeori/main/docs/architecture/deck-pipeline.png)
 
 パーサ（`src/lib/parser/`）は、slides.md を区切ってフロントマターを読み（`split.ts`）、共通スライドを展開し（`sources.ts`）、1 枚ずつ見出し、箇条書き、画像を各部分に割り当てます（`slide.ts`、`images.ts`）。
 
@@ -470,7 +468,11 @@ PDF は、静的サイトを一時ディレクトリに書き出し、Chromium �
 
 ## 開発
 
+kazeori のリポジトリを clone して動かすときは、`bun <リポジトリ>/cli/main.ts <コマンド>` で、`bunx kazeori <コマンド>` と同じように使えます。
+
 ```sh
+git clone git@github.com:kazamori/kazeori.git
+cd kazeori
 bun install
 bun run dev      # examples/ の workspace で dev server を起動する
 bun test         # 単体テスト

@@ -7,7 +7,7 @@ import { colors, type BrandConfig, type ColorName, type Diagnostic } from '../ty
 
 export const CONFIG_FILE = 'kazeori.yaml';
 
-/** kazeori のパッケージのルート（この repo、または node_modules/kazeori）。 */
+/** kazeori のパッケージのルート（この repo、または node_modules/@kazamori/kazeori）。 */
 export const kazeoriRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 
 export interface WorkspaceDefaults {
