@@ -38,7 +38,11 @@
 	style:height="{height}px"
 	style:--body-size="{fontSize}px"
 >
-	<SlideTitle title={slide.titleHtml} accent={slide.titleAccentHtml} />
+	<SlideTitle
+		title={slide.titleHtml}
+		accent={slide.titleAccentHtml}
+		titleLines={slide.titleLines}
+	/>
 	{#if slide.subtitleHtml}<p class="kz-subtitle side-subtitle">{@html slide.subtitleHtml}</p>{/if}
 	<Html {html} class="side-body" />
 	{@render children?.()}

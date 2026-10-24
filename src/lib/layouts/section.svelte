@@ -28,7 +28,12 @@
 {/if}
 
 <div class="heading kz-fit">
-	<SlideTitle title={slide.titleHtml} accent={slide.titleAccentHtml} size={96} />
+	<SlideTitle
+		title={slide.titleHtml}
+		accent={slide.titleAccentHtml}
+		titleLines={slide.titleLines}
+		size={96}
+	/>
 </div>
 <div class="rule"></div>
 <div class="sub kz-fit">

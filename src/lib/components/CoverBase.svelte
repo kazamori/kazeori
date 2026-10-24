@@ -3,7 +3,7 @@
   画像があれば右下に置き（slide1）、なければ正方形の組み合わせで右側を埋める（slide2）。
 -->
 <script lang="ts">
-	import { escapeHtml, formatDate } from '../format';
+	import { formatDate } from '../format';
 	import type { LayoutProps } from '../types';
 	import Html from './Html.svelte';
 	import Logo from './Logo.svelte';
@@ -16,17 +16,18 @@
 	let image = $derived(slide.images[0] ?? null);
 	let title = $derived(slide.titleHtml ?? deck.titleHtml);
 	let subtitle = $derived(slide.subtitleHtml ?? deck.eventHtml);
-	// サブタイトルにイベント名を使っていなければ、日付と発表者の行に添える。イベント名は HTML なので、ほかの値はエスケープする
-	let meta = $derived(
-		[
-			deck.date && escapeHtml(formatDate(deck.date) ?? ''),
-			slide.subtitleHtml ? deck.eventHtml : null,
-			deck.author && escapeHtml(deck.author)
-		]
-			.filter(Boolean)
-			.join('　')
-	);
+	let meta = $derived([formatDate(deck.date), deck.author].filter(Boolean).join('　'));
+	// サブタイトルにイベント名を使っていなければ、日付と発表者の行の下に添える
+	let metaEvent = $derived(slide.subtitleHtml ? deck.eventHtml : null);
 	let white = $derived(light ? 'var(--kz-surface)' : 'var(--kz-white)');
+
+	// タイトルの大きさの上限と、サブタイトルの大きさ（タイトルに対する比と上限）
+	const TITLE_SIZE = 96;
+	const SUBTITLE_RATIO = 0.6;
+	const SUBTITLE_MAX = 48;
+	// タイトルが長くて縮んだときは、サブタイトルも合わせて小さくし、タイトルより目立たないようにする
+	let titleSize = $state(TITLE_SIZE);
+	let subtitleSize = $derived(Math.min(SUBTITLE_MAX, Math.round(titleSize * SUBTITLE_RATIO)));
 </script>
 
 <div class={['cover', { light }]}>
@@ -52,12 +53,26 @@
 	</div>
 
 	<div class="text kz-fit">
-		<SlideTitle {title} accent={slide.titleAccent} size={96} light={!light} />
-		{#if subtitle}<p class="subtitle kz-lines">{@html subtitle}</p>{/if}
+		<SlideTitle
+			{title}
+			accent={slide.titleAccentHtml}
+			titleLines={slide.titleLines}
+			size={TITLE_SIZE}
+			light={!light}
+			onfit={(fitted) => (titleSize = fitted)}
+		/>
+		{#if subtitle}<p class="subtitle kz-lines" style:font-size="{subtitleSize}px">
+				{@html subtitle}
+			</p>{/if}
 		<Html html={slide.bodyHtml} class="cover-body" />
 	</div>
 
-	{#if meta}<p class="meta kz-lines">{@html meta}</p>{/if}
+	{#if meta || metaEvent}
+		<div class="meta">
+			{#if meta}<p>{meta}</p>{/if}
+			{#if metaEvent}<p class="kz-lines">{@html metaEvent}</p>{/if}
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -91,23 +106,27 @@
 		top: 288px;
 	}
 
+	/*
+	  タイトルとサブタイトルの塊。下端（y=770）をそろえ、下の日付の行との間を空ける。
+	  上端は、画像があるときのロゴ（y=288）にかからない位置にする
+	*/
 	.text {
 		position: absolute;
 		left: 109.5px;
 		top: 380px;
 		width: 800px;
-		height: 500px;
+		height: 390px;
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-end;
 		overflow: hidden;
 	}
 
+	/* タイトルとの間は、サブタイトルの大きさに合わせて空ける（48px のとき 24px） */
 	.subtitle {
-		margin: 24px 0 0;
+		margin: 0.5em 0 0;
 		font-family: var(--kz-font-heading);
-		font-size: 48px;
-		line-height: 1.3;
+		line-height: 1.4;
 	}
 
 	.text :global(.cover-body) {
@@ -116,11 +135,22 @@
 		font-size: 28px;
 	}
 
+	/* 日付と発表者の行と、その下のイベント名。イベント名が長ければ、右側の正方形にかからない幅で折り返す */
 	.meta {
 		position: absolute;
 		left: 109.5px;
-		top: 916.5px;
-		margin: 0;
+		top: 836.5px;
+		width: 800px;
 		font-size: 28px;
+		line-height: 1.5;
+	}
+
+	.meta p {
+		margin: 0;
+	}
+
+	/* 日付と発表者の行と、イベント名の行を分けて見せる */
+	.meta p + p {
+		margin-top: 0.5em;
 	}
 </style>

@@ -112,14 +112,15 @@ const slideKeys = new Set([
 	'src',
 	'title',
 	'titleAccent',
+	'titleLines',
 	'image',
 	'images',
 	'current',
 	'columns'
 ]);
 
-/** 正の整数で指定する項目（agenda の current、feature-grid の columns）。 */
-const positiveIntegerKeys = new Set(['current', 'columns']);
+/** 正の整数で指定する項目（agenda の current、feature-grid の columns、タイトルの行数）。 */
+const positiveIntegerKeys = new Set(['current', 'columns', 'titleLines']);
 
 const headmatterKeys = new Set(['themeConfig', 'author', 'event', 'date', 'brand']);
 

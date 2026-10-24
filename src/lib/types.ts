@@ -62,6 +62,8 @@ export interface Slide {
 	titleHtml: string | null;
 	titleAccentHtml: string | null;
 	subtitleHtml: string | null;
+	/** タイトルを収める行数（フロントマターの titleLines）。指定がなければ null で、レイアウトの既定に従う */
+	titleLines: number | null;
 	/** 最初の箇条書きより前の本文 */
 	introHtml: string;
 	/** 最初の箇条書きの各項目 */

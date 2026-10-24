@@ -1,6 +1,7 @@
 <!--
   締めのスライド。全面 accent1 に、お礼の文言とロゴを置く。
   お礼の文言は、枠に収まる最大の大きさで描く。改行（<br>）を書かなければ 1 行に、書けばその行数に収める。
+  フロントマターの titleLines を書けば、その行数に収める。
 -->
 <script module lang="ts">
 	import type { LayoutChrome } from '../types';
@@ -23,10 +24,9 @@
 	const MAX_SIZE = 160;
 
 	let thanks = $derived(slide.titleHtml ?? 'ありがとうございました');
+	let lines = $derived(slide.titleLines ?? thanks.split('\n').length);
 	// 行数分が収まる大きさを上限にする。行の幅に合わせた縮小は SlideTitle が行う
-	let size = $derived(
-		Math.min(MAX_SIZE, Math.floor(THANKS_HEIGHT / (thanks.split('\n').length * TITLE_LINE_HEIGHT)))
-	);
+	let size = $derived(Math.min(MAX_SIZE, Math.floor(THANKS_HEIGHT / (lines * TITLE_LINE_HEIGHT))));
 </script>
 
 <div class="end">
@@ -39,7 +39,7 @@
 	<Square x={63.2} y={62.8} size={36.7} color="var(--kz-accent3)" />
 
 	<div class="message kz-fit" style:height="{MESSAGE_HEIGHT}px">
-		<SlideTitle title={thanks} {size} inline light />
+		<SlideTitle title={thanks} {size} titleLines={slide.titleLines} inline light />
 		{#if slide.titleAccentHtml}<p class="accent kz-lines">{@html slide.titleAccentHtml}</p>{/if}
 		<Html html={slide.bodyHtml} class="end-body" />
 	</div>

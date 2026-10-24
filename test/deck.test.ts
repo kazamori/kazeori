@@ -221,21 +221,24 @@ describe('parseDeck', () => {
 		}
 	});
 
-	test('current と columns は 1 以上の整数でなければ警告する', async () => {
+	test('current、columns、titleLines は 1 以上の整数でなければ警告する', async () => {
 		const dir = path.join(wsRoot, 'decks/2026/2026-01-04-keys');
 		fs.mkdirSync(dir, { recursive: true });
 		fs.writeFileSync(
 			path.join(dir, 'slides.md'),
-			'---\ntitle: 項目\n---\n\n---\nlayout: feature-grid\ncolumns: 3\n---\n\n---\nlayout: feature-grid\ncolumns: two\n---\n\n---\nlayout: agenda\ncurrent: 0\n---\n'
+			'---\ntitle: 項目\ntitleLines: 1\n---\n\n---\nlayout: feature-grid\ncolumns: 3\n---\n\n---\nlayout: feature-grid\ncolumns: two\n---\n\n---\nlayout: agenda\ncurrent: 0\ntitleLines: 0\n---\n'
 		);
 		try {
-			const { diagnostics } = await parseDeck(loadWorkspace(wsRoot), '2026/2026-01-04-keys', {
+			const { deck, diagnostics } = await parseDeck(loadWorkspace(wsRoot), '2026/2026-01-04-keys', {
 				resolveAsset
 			});
 			expect(diagnostics.map((d) => d.message)).toEqual([
 				'columns は 1 以上の整数で指定してください',
-				'current は 1 以上の整数で指定してください'
+				'current は 1 以上の整数で指定してください',
+				'titleLines は 1 以上の整数で指定してください'
 			]);
+			// 正しくない titleLines は使わず、レイアウトの既定の行数に任せる
+			expect(deck.slides.map((s) => s.titleLines)).toEqual([1, null, null, null]);
 		} finally {
 			fs.rmSync(dir, { recursive: true, force: true });
 		}

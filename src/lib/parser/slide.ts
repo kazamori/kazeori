@@ -169,6 +169,10 @@ export async function buildSlide(
 		titleHtml: title?.html ?? null,
 		titleAccentHtml: titleAccent?.html ?? null,
 		subtitleHtml: null,
+		titleLines:
+			Number.isInteger(fm.titleLines) && (fm.titleLines as number) >= 1
+				? (fm.titleLines as number)
+				: null,
 		introHtml: '',
 		items: [],
 		restHtml: '',

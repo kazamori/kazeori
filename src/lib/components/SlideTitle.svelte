@@ -2,6 +2,8 @@
   カザモリスタイルのタイトル。1 行目を文字色、titleAccent を accent1 で描く。
   inline のときは 2 つを 1 行に並べ、そうでなければ 2 行に分ける。
   文字が長くて行数が増えるときは、maxLines に収まるまで文字を小さくする（minSize まで）。
+  titleLines を渡すと、1 行目をその行数に収め、titleAccent の行はそれとは別に数える。
+  縮めた後の文字の大きさは onfit で受け取れる（サブタイトルの大きさを合わせるときなどに使う）。
   タイトルの改行（\n。markdown の <br> や YAML の改行から作る）は、そのまま改行として描き、その行数に収める。
   title と accent は HTML で受け取る（Slide の titleHtml と titleAccentHtml）。素の文字列を渡すときは HTML の特殊文字をエスケープする。
 -->
@@ -19,7 +21,9 @@
 		align = 'left',
 		light = false,
 		maxLines = null,
-		minSize = 44
+		titleLines = null,
+		minSize = 44,
+		onfit
 	}: {
 		title: string | null;
 		accent?: string | null;
@@ -27,18 +31,23 @@
 		inline?: boolean;
 		align?: 'left' | 'center';
 		light?: boolean;
+		/** 全体を収める行数。titleLines より優先する */
 		maxLines?: number | null;
+		/** 1 行目（title）を収める行数（フロントマターの titleLines） */
+		titleLines?: number | null;
 		minSize?: number;
+		/** 文字の大きさを決めたときに、縮めた後の大きさ（px）を受け取る */
+		onfit?: (size: number) => void;
 	} = $props();
 
-	let titleLines = $derived(title ? title.split('\n').length : 0);
+	let mainLines = $derived(title ? (titleLines ?? title.split('\n').length) : 0);
 	let accentLines = $derived(accent ? accent.split('\n').length : 0);
-	// 書き手が改行を明示したときは、その行数に収まるまで文字を小さくし、自動では折り返さない。
+	// 書き手が改行や行数を明示したときは、その行数に収まるまで文字を小さくし、自動では折り返さない。
 	// 明示しないときの上限は、inline なら 1 行、それ以外は 2 行（2 行構成なら各行 1 行ずつ）
-	let explicit = $derived(titleLines > 1 || accentLines > 1);
+	let explicit = $derived(titleLines !== null || mainLines > 1 || accentLines > 1);
 	let lines = $derived(
 		maxLines ??
-			(explicit ? titleLines + accentLines - (inline && title && accent ? 1 : 0) : inline ? 1 : 2)
+			(explicit ? mainLines + accentLines - (inline && title && accent ? 1 : 0) : inline ? 1 : 2)
 	);
 
 	function fit(node: HTMLElement) {
@@ -52,6 +61,7 @@
 				current -= 4;
 				node.style.fontSize = `${current}px`;
 			}
+			onfit?.(current);
 		};
 		measure();
 		document.fonts?.ready.then(measure);

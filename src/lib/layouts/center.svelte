@@ -8,7 +8,13 @@
 </script>
 
 <div class="center kz-fit">
-	<SlideTitle title={slide.titleHtml} accent={slide.titleAccentHtml} size={84} align="center" />
+	<SlideTitle
+		title={slide.titleHtml}
+		accent={slide.titleAccentHtml}
+		titleLines={slide.titleLines}
+		size={84}
+		align="center"
+	/>
 	{#if slide.subtitleHtml}<p class="subtitle kz-lines">{@html slide.subtitleHtml}</p>{/if}
 	<Html html={slide.bodyHtml} class="center-body" />
 </div>
